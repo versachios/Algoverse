@@ -59,6 +59,7 @@ Algo3D dành cho **học sinh, sinh viên đang học thuật toán và cấu tr
 ## 📌 Trạng thái dự án
 
 Algo3D đang trong quá trình phát triển tích cực. Giao diện, thuật toán và nội dung lý thuyết sẽ **liên tục được bổ sung**.
+Commit 8/30 : Mới chỉ upload dự án lên github. Ngày mai sẽ deploy lên CloudFlares.
 
 ---
 
