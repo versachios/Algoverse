@@ -1,0 +1,61 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Bubble Sort không tối ưu, nhưng là nơi tốt nhất để nhìn thấy "so sánh" và "đổi chỗ" — hai thao tác nền tảng của mọi thuật toán sắp xếp.*
+
+## Bài toán
+
+Cho một mảng số nguyên, hãy sắp xếp lại thành thứ tự tăng dần.
+
+Cách "brute-force" đơn giản nhất: với mỗi vị trí, quét toàn bộ phần còn lại để tìm phần tử nhỏ nhất
+rồi đặt vào đúng chỗ — đó thực chất là *Selection Sort*, độ phức tạp O(n²) nhưng không tận dụng được
+việc mảng đã "gần sắp xếp xong" ở giữa quá trình.
+
+## Ý tưởng của Bubble Sort
+
+Thay vì tìm min/max mỗi vòng, Bubble Sort chỉ so sánh **hai phần tử liền kề**. Nếu chúng sai thứ tự,
+đổi chỗ ngay lập tức. Sau một lượt quét từ trái sang phải, phần tử **lớn nhất** chắc chắn đã "sủi bọt"
+(bubble up) về đúng vị trí cuối cùng. Lặp lại, mỗi lần thu hẹp phạm vi bên phải lại một phần tử.
+
+Điểm tối ưu nhỏ nhưng quan trọng: nếu một lượt quét không có bất kỳ lần đổi chỗ nào, nghĩa là mảng
+đã sắp xếp xong — có thể dừng sớm thay vì chạy đủ n-1 vòng.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Xấu nhất (mảng ngược)", "O(n²)", "Không có lần nào dừng sớm"],
+    ["Tốt nhất (đã sắp xếp)", "O(n)", "Nhờ cờ swapped, dừng sau 1 lượt"],
+    ["Trung bình", "O(n²)", "—"],
+    ["Không gian", "O(1)", "Sắp xếp tại chỗ (in-place)"],
+  ]}
+/>
+
+So với Selection Sort (luôn O(n²) mọi trường hợp), Bubble Sort có lợi thế phát hiện sớm mảng đã
+sắp xếp, nhưng nhìn chung vẫn quá chậm cho n lớn — không dùng trong thực tế, chỉ phù hợp để làm quen
+với khái niệm so sánh/đổi chỗ trước khi học Merge Sort, Quick Sort.
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]`, lượt quét đầu tiên (i = 0):
+
+1. So sánh 6 và 2 → 6 > 2 → đổi chỗ → `[2, 6, 9, 4]`
+2. So sánh 6 và 9 → không đổi → `[2, 6, 9, 4]`
+3. So sánh 9 và 4 → 9 > 4 → đổi chỗ → `[2, 6, 4, 9]`
+
+Sau lượt 1, phần tử `9` đã về đúng vị trí cuối. Lượt 2 chỉ cần xét 3 phần tử đầu.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bài nhập môn để làm quen thao tác so sánh — đổi chỗ trước khi học các thuật toán sắp xếp O(n log n).
+- Dạng bài đếm số lần đổi chỗ tối thiểu để sắp xếp mảng (liên quan đến khái niệm "nghịch thế" — inversion count),
+  tuy Bubble Sort không tối ưu để giải trực tiếp bài này với n lớn nhưng giúp hình dung trực quan khái niệm nghịch thế.
+
+<Quiz
+  question="Ở trường hợp xấu nhất, độ phức tạp thời gian của Bubble Sort là gì?"
+  options={["O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)"]}
+  answer={2}
+  correctNote="Chính xác — mỗi lượt quét là O(n), lặp lại tối đa n lần."
+  incorrectNote="Chưa đúng — thử nghĩ về số lần so sánh tối đa khi mảng bị đảo ngược hoàn toàn."
+/>

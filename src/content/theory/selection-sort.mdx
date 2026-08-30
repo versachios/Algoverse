@@ -1,0 +1,59 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+## Bài toán
+
+Vẫn là bài toán sắp xếp mảng tăng dần, nhưng lần này ta tối ưu theo hướng khác Bubble Sort:
+**giảm số lần đổi chỗ (swap)** xuống mức tối thiểu, chấp nhận số lần so sánh vẫn ở mức O(n²).
+
+## Ý tưởng của Selection Sort
+
+Ở mỗi vòng, quét toàn bộ phần **chưa sắp xếp** để tìm ra phần tử **nhỏ nhất**, rồi đổi chỗ nó với
+phần tử đầu tiên của phần chưa sắp xếp đó. Sau vòng thứ `i`, `i+1` phần tử đầu mảng đã đúng vị trí
+cuối cùng — khác với Bubble Sort (đẩy phần tử lớn nhất về *cuối*), Selection Sort đẩy phần tử nhỏ
+nhất về *đầu*.
+
+Điểm khác biệt cốt lõi so với Bubble Sort: Bubble Sort đổi chỗ ngay khi phát hiện sai thứ tự (có
+thể đổi chỗ rất nhiều lần mỗi vòng), còn Selection Sort chỉ đổi chỗ **đúng một lần** ở cuối mỗi vòng
+— hữu ích khi thao tác ghi (write) tốn kém hơn nhiều so với thao tác đọc/so sánh.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Mọi trường hợp", "O(n²)", "Luôn quét hết phần chưa sắp xếp, kể cả khi mảng đã sắp xếp sẵn"],
+    ["Số lần đổi chỗ", "Tối đa n-1", "Ít hơn hẳn Bubble Sort, vốn có thể đổi chỗ O(n²) lần"],
+    ["Không gian", "O(1)", "Sắp xếp tại chỗ"],
+  ]}
+/>
+
+So với Bubble Sort: Selection Sort **không có** cơ chế dừng sớm khi mảng đã sắp xếp (luôn chạy đủ
+n-1 vòng so sánh), nhưng bù lại số lần ghi/đổi chỗ ít hơn nhiều — phù hợp hơn khi chi phí ghi bộ nhớ
+cao (ví dụ ghi vào flash memory).
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]`, vòng đầu tiên (i = 0):
+
+1. Giả sử nhỏ nhất là a[0] = 6
+2. So sánh với 2 → 2 nhỏ hơn → cập nhật vị trí nhỏ nhất = 1
+3. So sánh với 9 → không đổi
+4. So sánh với 4 → không đổi (4 > 2)
+5. Kết thúc vòng: đổi chỗ a[0] và a[1] → `[2, 6, 9, 4]`
+
+Chỉ **một** lần đổi chỗ cho cả vòng, dù đã so sánh 3 lần.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bài nhập môn để so sánh trực tiếp với Bubble Sort, làm rõ khái niệm "chi phí so sánh vs chi phí ghi".
+- Ý tưởng "chọn phần tử tối ưu rồi cố định vị trí" là nền tảng để hiểu Heap Sort sau này (dùng heap
+  thay vì quét tuyến tính để tìm min/max nhanh hơn).
+
+<Quiz
+  question="So với Bubble Sort, ưu điểm chính của Selection Sort là gì?"
+  options={["Nhanh hơn O(n log n)", "Số lần đổi chỗ (swap) ít hơn", "Dùng được cho dữ liệu chưa load hết vào bộ nhớ", "Luôn dừng sớm khi mảng đã sắp xếp"]}
+  answer={1}
+  correctNote="Chính xác — Selection Sort chỉ đổi chỗ tối đa n-1 lần, so với có thể O(n²) lần của Bubble Sort."
+  incorrectNote="Chưa đúng — cả hai đều O(n²) thời gian, và Selection Sort thực ra KHÔNG có cơ chế dừng sớm."
+/>

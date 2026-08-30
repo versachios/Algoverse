@@ -1,0 +1,61 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+## Bài toán
+
+Cho một mảng **đã sắp xếp** và một giá trị `target`, tìm vị trí của `target` trong mảng (hoặc
+kết luận không tồn tại) nhanh nhất có thể.
+
+Cách brute-force — Linear Search — quét từ trái sang phải, độ phức tạp O(n). Với mảng đã sắp xếp,
+ta có thể làm tốt hơn nhiều nhờ tận dụng thứ tự sẵn có.
+
+## Ý tưởng của Binary Search
+
+Vì mảng đã sắp xếp, so sánh `target` với phần tử **ở giữa** (`mid`) cho ta thông tin về **cả một
+nửa** mảng cùng lúc:
+
+- Nếu `a[mid] == target` → tìm thấy, dừng.
+- Nếu `a[mid] < target` → toàn bộ nửa trái (kể cả `mid`) đều nhỏ hơn target → chỉ cần tìm tiếp ở
+  nửa phải (`low = mid + 1`).
+- Nếu `a[mid] > target` → chỉ cần tìm tiếp ở nửa trái (`high = mid - 1`).
+
+Mỗi bước loại bỏ đúng một nửa phạm vi tìm kiếm còn lại, nên chỉ cần khoảng log₂(n) bước là thu hẹp
+về 0 hoặc 1 phần tử.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Mọi trường hợp", "O(log n)", "Mỗi bước giảm phạm vi tìm kiếm đi một nửa"],
+    ["Không gian", "O(1)", "Chỉ cần 3 biến low, high, mid (bản lặp, không đệ quy)"],
+    ["Yêu cầu", "Mảng phải đã sắp xếp", "Nếu chưa sắp xếp, phải sort trước — tốn O(n log n) một lần"],
+  ]}
+/>
+
+So với Linear Search O(n): với mảng 1 triệu phần tử, Linear Search cần tối đa 1,000,000 phép so
+sánh, còn Binary Search chỉ cần khoảng 20 phép so sánh.
+
+## Ví dụ chạy tay
+
+Mảng `[1, 3, 4, 6, 8, 9, 11, 14]`, tìm `target = 9`:
+
+1. low = 0, high = 7 → mid = 3 → a[3] = 6 < 9 → low = 4
+2. low = 4, high = 7 → mid = 5 → a[5] = 9 == 9 → tìm thấy tại vị trí 5!
+
+Chỉ 2 bước so sánh cho mảng 8 phần tử.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Tìm kiếm trực tiếp trong mảng/danh sách đã sắp xếp (từ điển, bảng điểm đã sort theo mã số báo danh...).
+- **Binary Search trên đáp án**: dạng bài "tìm giá trị nhỏ nhất/lớn nhất thoả điều kiện P(x)" khi
+  P(x) có tính đơn điệu (một khi đúng thì mọi giá trị lớn hơn/nhỏ hơn cũng đúng) — không tìm kiếm
+  trực tiếp trên mảng dữ liệu mà tìm kiếm trên **không gian đáp án**, rất hay gặp trong đề thi HSG.
+
+<Quiz
+  question="Điều kiện bắt buộc để dùng Binary Search trực tiếp trên mảng là gì?"
+  options={["Mảng phải có số phần tử chẵn", "Mảng phải đã được sắp xếp", "Mảng không chứa số âm", "Mảng phải có ít hơn 100 phần tử"]}
+  answer={1}
+  correctNote="Đúng — nếu mảng chưa sắp xếp, so sánh với phần tử giữa không cho ta biết gì về nửa còn lại."
+  incorrectNote="Chưa đúng — điều kiện then chốt là mảng phải đã sắp xếp (tăng hoặc giảm dần)."
+/>

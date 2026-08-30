@@ -1,0 +1,56 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Insertion Sort là cách con người thực sự sắp xếp một cỗ bài trên tay — cầm từng lá, tìm chỗ đúng, nhét vào.*
+
+## Bài toán
+
+Vẫn là sắp xếp mảng tăng dần — lần này mô phỏng đúng trực giác con người: giữ một "cỗ bài đã sắp
+xếp" ở tay trái, lần lượt rút từng lá từ cỗ chưa sắp và chèn vào đúng chỗ trong cỗ đã sắp.
+
+## Ý tưởng của Insertion Sort
+
+Coi mảng có hai vùng: vùng **đã sắp xếp** (bên trái) và vùng **chưa xử lý** (bên phải). Ở mỗi bước,
+lấy phần tử đầu tiên của vùng chưa xử lý (`key`), rồi dịch các phần tử lớn hơn `key` trong vùng đã
+sắp sang phải để nhường chỗ, cuối cùng đặt `key` vào đúng vị trí trống.
+
+Khác với Bubble/Selection Sort (luôn quét toàn bộ phần còn lại), Insertion Sort chỉ cần quét đến
+khi tìm được vị trí đúng — nếu mảng gần như đã sắp xếp sẵn, vòng `while` gần như không chạy lần nào.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Tốt nhất (đã sắp xếp)", "O(n)", "Mỗi key đã đúng chỗ ngay, không cần dịch"],
+    ["Xấu nhất (ngược hoàn toàn)", "O(n²)", "Mỗi phần tử phải dịch qua toàn bộ vùng đã sắp"],
+    ["Không gian", "O(1)", "Sắp xếp tại chỗ"],
+  ]}
+/>
+
+So với Bubble/Selection Sort: cùng O(n²) trường hợp xấu nhất, nhưng Insertion Sort thích ứng rất tốt
+với dữ liệu "gần đã sắp xếp" — đây là lý do nhiều thư viện chuẩn (Timsort, Introsort) dùng Insertion
+Sort cho các đoạn mảng con nhỏ.
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]`:
+
+1. i = 1: key = 2. So với a[0] = 6 → 6 > 2 → dịch 6 sang phải → `[6, 6, 9, 4]` → chèn 2 → `[2, 6, 9, 4]`
+2. i = 2: key = 9. So với a[1] = 6 → 6 < 9 → dừng, chèn tại chỗ → `[2, 6, 9, 4]`
+3. i = 3: key = 4. So với a[2] = 9 → dịch; so với a[1] = 6 → dịch; so với a[0] = 2 → dừng → `[2, 4, 6, 9]`
+
+## Ứng dụng / dạng bài hay gặp
+
+- Sắp xếp mảng nhỏ (dưới ~20 phần tử) hoặc dữ liệu đến tuần tự (online sorting) — chèn từng phần tử
+  mới vào một cấu trúc đã sắp xếp sẵn.
+- Ý tưởng "duy trì bất biến: phần đã xử lý luôn ở trạng thái đúng" là nền tảng tư duy quy nạp toán học,
+  rất hữu ích khi chứng minh tính đúng đắn của thuật toán trong các bài thi HSG.
+
+<Quiz
+  question="Insertion Sort đạt độ phức tạp O(n) khi nào?"
+  options={["Khi mảng có số lượng phần tử chẵn", "Khi mảng đã gần như sắp xếp sẵn", "Khi mảng chứa toàn số dương", "Không bao giờ, luôn là O(n²)"]}
+  answer={1}
+  correctNote="Đúng — nếu mỗi phần tử mới đã gần đúng vị trí, vòng while gần như không cần dịch chuyển."
+  incorrectNote="Chưa đúng — hãy nghĩ về trường hợp cỗ bài gần như đã được sắp xếp sẵn."
+/>

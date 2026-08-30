@@ -1,0 +1,55 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Không phải bài toán nào cũng đáng để sắp xếp trước — đôi khi quét một lần là đủ.*
+
+## Bài toán
+
+Cho một mảng **bất kỳ** (không cần sắp xếp) và một giá trị `target`, tìm vị trí của `target`
+trong mảng.
+
+## Ý tưởng của Linear Search
+
+Đơn giản nhất có thể: đi từ đầu đến cuối mảng, so sánh từng phần tử với `target`. Gặp thì trả về
+vị trí ngay, quét hết mà không gặp thì kết luận không tồn tại.
+
+Đây là thuật toán tìm kiếm **duy nhất** hoạt động được trên mảng chưa sắp xếp mà không cần biến đổi
+gì thêm — cái giá phải trả là không tận dụng được bất kỳ cấu trúc nào của dữ liệu.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Tốt nhất", "O(1)", "Target nằm ngay ở đầu mảng"],
+    ["Xấu nhất", "O(n)", "Target ở cuối hoặc không tồn tại — phải quét hết"],
+    ["Không gian", "O(1)", "Không cần bộ nhớ phụ"],
+    ["Yêu cầu dữ liệu", "Không cần sắp xếp", "Khác biệt lớn nhất so với Binary Search"],
+  ]}
+/>
+
+Nếu chỉ tìm kiếm **một lần**, Linear Search O(n) thường rẻ hơn tổng chi phí "sort rồi Binary Search"
+(O(n log n) + O(log n)). Binary Search chỉ đáng dùng khi mảng đã sắp xếp sẵn hoặc sẽ được tìm kiếm
+nhiều lần.
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4, 7]`, tìm `target = 4`:
+
+1. So sánh a[0] = 6 ≠ 4 → tiếp tục
+2. So sánh a[1] = 2 ≠ 4 → tiếp tục
+3. So sánh a[2] = 9 ≠ 4 → tiếp tục
+4. So sánh a[3] = 4 == 4 → tìm thấy tại vị trí 3!
+
+## Ứng dụng / dạng bài hay gặp
+
+- Dữ liệu nhỏ, chưa sắp xếp, hoặc chỉ tìm kiếm một lần duy nhất — không đáng để trả chi phí sắp xếp trước.
+- Bài nhập môn để làm rõ khái niệm "độ phức tạp trường hợp xấu nhất", trước khi so sánh với Binary Search.
+
+<Quiz
+  question="Khi nào Linear Search là lựa chọn hợp lý hơn Binary Search?"
+  options={["Khi mảng đã sắp xếp và tìm kiếm nhiều lần", "Khi mảng chưa sắp xếp và chỉ tìm kiếm một lần", "Khi mảng có hơn 1 triệu phần tử", "Không bao giờ, Binary Search luôn tốt hơn"]}
+  answer={1}
+  correctNote="Đúng — chi phí sort trước (O(n log n)) không đáng nếu chỉ tìm kiếm đúng một lần."
+  incorrectNote="Chưa đúng — hãy so sánh tổng chi phí sort + Binary Search với chi phí quét tuyến tính một lần."
+/>

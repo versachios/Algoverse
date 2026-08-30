@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/*
+  ── Design tokens: "Sổ Tay Kỹ Thuật" (Field Guide) ──
+  Warm near-black dossier aesthetic: off-white ink, a single terracotta/rust
+  accent used at two intensities for state, a faint technical grid, and a
+  serif italic reserved for pull-quotes/worked examples against mono labels
+  and a grotesk sans for everything else. No blue, no purple, no green.
+*/
+@theme inline {
+  --color-ink: #0d0c0a;
+  --color-panel: #151311;
+  --color-panel-raised: #1c1916;
+  --color-grid-line: #211e1a;
+  --color-hairline: #2b2723;
+  --color-text: #ece7dc;
+  --color-muted: #8f897d;
+  --color-faint: #8f897d1f;
+
+  --color-signal-amber: #d97a4d; /* primary accent: terracotta */
+  --color-signal-amber-dim: #d97a4d26;
+  --color-signal-rose: #a54a3a; /* secondary: deeper rust, for negative/swap states */
+  --color-signal-rose-dim: #a54a3a26;
+  --color-signal-gold: #c9b892; /* tertiary: soft khaki, for "settled/done" states */
+
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", Georgia, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  position: relative;
+}
+
+/* faint technical grid, warm near-invisible lines */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.6;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+}
+
+#__next,
+body > div {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background: var(--color-signal-amber-dim);
+  color: var(--color-text);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+}
+
+/* field-guide card frame: hairline border + accent corner brackets on all 4 corners */
+.blueprint-frame {
+  position: relative;
+  border: 1px solid var(--color-hairline);
+  background: color-mix(in srgb, var(--color-panel) 94%, transparent);
+}
+.blueprint-frame::before,
+.blueprint-frame::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  opacity: 0.85;
+}
+.blueprint-frame::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid var(--color-signal-amber);
+  border-left: 1.5px solid var(--color-signal-amber);
+}
+.blueprint-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid var(--color-signal-amber);
+  border-right: 1.5px solid var(--color-signal-amber);
+}
+
+.label-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-signal-amber);
+  box-shadow: 0 0 6px var(--color-signal-amber);
+}
+
+.control-btn {
+  border: 1px solid var(--color-hairline);
+  background: var(--color-panel-raised);
+  color: var(--color-text);
+  border-radius: 2px;
+  padding: 0.35rem 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.control-btn:hover {
+  border-color: var(--color-signal-amber);
+  color: var(--color-signal-amber);
+}
+
+.highlight-amber {
+  color: var(--color-signal-amber);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
