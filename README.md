@@ -6,7 +6,7 @@
 ![Three.js](https://img.shields.io/badge/Three.js-R3F-black?logo=three.js)
 ![Status](https://img.shields.io/badge/Status-In_Development-orange)
 
-> **Thấy trước khi hiểu.**
+> **Thấy thuật toán hoạt động trước khi hiểu.**
 
 Algoverse là nền tảng học thuật toán và cấu trúc dữ liệu **bằng trực quan hoá**, được xây dựng với mục tiêu biến những khái niệm trừu tượng — so sánh, đổi chỗ, đệ quy, chia để trị — thành thứ nhìn thấy được từng bước một, thay vì chỉ đọc pseudocode.
 
