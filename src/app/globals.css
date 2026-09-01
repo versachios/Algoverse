@@ -1,12 +1,4 @@
 @import "tailwindcss";
-
-/*
-  ── Design tokens: "Sổ Tay Kỹ Thuật" (Field Guide) ──
-  Warm near-black dossier aesthetic: off-white ink, a single terracotta/rust
-  accent used at two intensities for state, a faint technical grid, and a
-  serif italic reserved for pull-quotes/worked examples against mono labels
-  and a grotesk sans for everything else. No blue, no purple, no green.
-*/
 @theme inline {
   --color-ink: #0d0c0a;
   --color-panel: #151311;

@@ -20,7 +20,7 @@ export default function Home() {
       <header className="mx-auto max-w-6xl w-full px-4 md:px-6 pt-6 flex items-center justify-between">
         <span className="font-display font-semibold text-lg tracking-tight flex items-center gap-2">
           <span className="label-dot" />
-          ALGO3D
+          ALGOVERSE
         </span>
         <nav className="hidden sm:flex gap-5 text-xs text-[var(--color-muted)] font-mono-tech uppercase tracking-widest">
           <a href="#chu-de" className="hover:text-[var(--color-text)]">Chủ đề</a>
