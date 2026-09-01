@@ -79,7 +79,7 @@ Algoverse đang trong quá trình phát triển tích cực. Giao diện, thuậ
 
 - **Author:** [@versachios](https://github.com/versachios)
 
-- Liên hệ với **tác giả** [chọn một trong các đường link đầu trang weh tại dây](https://andao.pages.dev/)
+- Liên hệ với **tác giả** [tại một trong các đường link đầu trang web ở dây](https://andao.pages.dev/)
 
 Mọi đóng góp (Pull Request) hoặc báo lỗi (Issues) đều rất được hoan nghênh. Đừng quên tặng project **1 🌟 Star** nếu bạn thấy nó hữu ích nhé!
 
@@ -93,5 +93,5 @@ No license currently provided.
 
 <p align="center">
   <strong>Algoverse</strong><br>
-  Thấy trước khi hiểu.
+  Thấy thuật toán hoạt động trước khi hiểu.
 </p>
