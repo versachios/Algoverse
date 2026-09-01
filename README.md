@@ -40,7 +40,7 @@ Algoverse dành cho **học sinh, sinh viên đang học thuật toán và cấu
 
 ## 🚀 Trải nghiệm trực tuyến
 
-Đang trong quá trình triển khai — link demo sẽ được cập nhật khi lên production.
+Nhấp vào link (tại đây)[https://hvt-algoverse.pages.dev/] để trải nghiệm.
 
 ---
 
@@ -78,6 +78,8 @@ Algoverse đang trong quá trình phát triển tích cực. Giao diện, thuậ
 ## 👤 Tác giả & Đóng góp
 
 - **Author:** [@versachios](https://github.com/versachios)
+
+- Liên hệ với **tác giả** (tại một trong các đường link đầu trang)[https://andao.pages.dev/]
 
 Mọi đóng góp (Pull Request) hoặc báo lỗi (Issues) đều rất được hoan nghênh. Đừng quên tặng project **1 🌟 Star** nếu bạn thấy nó hữu ích nhé!
 
