@@ -9,9 +9,9 @@ const LEARNING_PATH = [
   "Cấu trúc dữ liệu nền tảng (Stack, Queue, Linked List)",
   "Two Pointers / Sliding Window / Prefix Sum / Kadane's",
   "Sorting O(n log n) + Đệ quy & Backtracking",
+  "Dynamic Programming (Knapsack, LCS, LIS)",
   "Graph (BFS/DFS → Dijkstra/A* → DSU)",
   "Tree (BST/AVL → Segment/Fenwick Tree)",
-  "Dynamic Programming (Knapsack, LCS, LIS)",
 ];
 
 export default function Home() {
@@ -30,7 +30,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-6xl w-full px-4 md:px-6 pt-10 pb-4 flex flex-col gap-4">
         <p className="text-[11px] uppercase tracking-[0.2em] highlight-amber font-mono-tech">
-          Field Guide · Học tin học bằng cách nhìn thấy nó chạy
+          Field Guide · Học lập trình bằng cách nhìn thấy nó chạy
         </p>
         <h1 className="font-display font-semibold text-4xl md:text-6xl leading-[1.05] max-w-3xl tracking-tight">
           Thuật toán không còn là <span className="highlight-amber">hộp đen</span>.
