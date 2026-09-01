@@ -5,7 +5,7 @@ import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/binary-search.mdx";
 
 export const metadata: Metadata = {
-  title: "Binary Search — Lý thuyết & Mô phỏng trực quan | Algo3D",
+  title: "Binary Search — Lý thuyết & Mô phỏng trực quan | Algoverse",
   description:
     "Học Binary Search qua lý thuyết, ví dụ chạy tay và mô phỏng 2.5D từng bước thu hẹp phạm vi tìm kiếm.",
 };

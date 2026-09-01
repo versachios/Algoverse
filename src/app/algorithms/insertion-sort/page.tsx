@@ -5,7 +5,7 @@ import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/insertion-sort.mdx";
 
 export const metadata: Metadata = {
-  title: "Insertion Sort — Lý thuyết & Mô phỏng trực quan | Algo3D",
+  title: "Insertion Sort — Lý thuyết & Mô phỏng trực quan | Algoverse",
   description:
     "Học Insertion Sort qua lý thuyết, ví dụ chạy tay và mô phỏng 3D quá trình chèn từng phần tử vào vùng đã sắp xếp.",
 };

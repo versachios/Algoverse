@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Algo3D — Học thuật toán bằng trực quan hoá",
+  title: "Algoverse — Học thuật toán bằng trực quan hoá",
   description:
     "Website học thuật toán, cấu trúc dữ liệu và tin học từ cơ bản đến olympiad qua mô phỏng trực quan 2D/3D.",
 };

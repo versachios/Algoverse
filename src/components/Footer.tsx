@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="mx-auto max-w-6xl w-full px-4 md:px-6 py-8 flex items-center justify-between text-xs text-[var(--color-muted)] font-mono-tech uppercase tracking-wide">
-      <span>Algo3D — dự án học tập cá nhân.</span>
+      <span>Algoverse — dự án học tập cá nhân.</span>
       <a
         href="https://github.com/versachios"
         target="_blank"

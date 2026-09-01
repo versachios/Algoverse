@@ -1,0 +1,46 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *BST là bước đầu tiên để hiểu vì sao "cấu trúc dữ liệu có thứ tự" lại nhanh hơn mảng thường.*
+
+## Bài toán
+
+Cần một cấu trúc dữ liệu hỗ trợ chèn, tìm kiếm và xoá một tập số, nhanh hơn mảng (O(n) mỗi thao tác)
+nhưng vẫn giữ được thứ tự để duyệt tăng dần dễ dàng.
+
+## Ý tưởng của Binary Search Tree
+
+Mỗi node lưu một giá trị và có tối đa 2 con: **con trái luôn nhỏ hơn node**, **con phải luôn lớn
+hơn node**. Nhờ bất biến này, tìm kiếm một giá trị chỉ cần đi từ gốc, mỗi bước loại bỏ một nửa cây
+còn lại — giống Binary Search nhưng trên cấu trúc cây thay vì mảng đã sắp xếp.
+
+Chèn giá trị mới cũng theo logic tương tự: đi xuống theo đúng quy tắc trái/phải cho đến khi gặp vị
+trí trống thì gắn node mới vào đó.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Thao tác", "Trung bình", "Xấu nhất"]}
+  rows={[
+    ["Tìm kiếm", "O(log n)", "O(n) — cây bị lệch hẳn về 1 phía"],
+    ["Chèn", "O(log n)", "O(n)"],
+    ["Xoá", "O(log n)", "O(n)"],
+  ]}
+/>
+
+Trường hợp xấu nhất xảy ra khi dữ liệu chèn vào đã có thứ tự (vd chèn 1,2,3,4,5 liên tiếp) — cây
+suy biến thành một danh sách liên kết. Đây chính là lý do AVL Tree ra đời: tự cân bằng để tránh
+trường hợp này.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Nền tảng cho `set`/`map` trong C++ STL (thực chất cài bằng Red-Black Tree, một biến thể cân bằng của BST).
+- Bài toán duyệt cây theo thứ tự (in-order traversal) để lấy dãy đã sắp xếp.
+
+<Quiz
+  question="Trong BST, con trái của một node so với chính node đó thì thế nào?"
+  options={["Luôn lớn hơn", "Luôn nhỏ hơn", "Có thể lớn hoặc nhỏ", "Luôn bằng"]}
+  answer={1}
+  correctNote="Chính xác — đây là bất biến cốt lõi giúp tìm kiếm nhanh."
+  incorrectNote="Chưa đúng — nhớ lại quy tắc trái nhỏ, phải lớn."
+/>

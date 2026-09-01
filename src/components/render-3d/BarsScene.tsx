@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
-import type { AlgorithmStep, IndexRole } from "@/algorithms/types";
+import type { ArrayStep, IndexRole } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<IndexRole, string> = {
   default: "#2b2723",
@@ -79,7 +79,7 @@ function Floor() {
   );
 }
 
-export function BarsScene({ step, interactive = true }: { step: AlgorithmStep; interactive?: boolean }) {
+export function BarsScene({ step, interactive = true }: { step: ArrayStep; interactive?: boolean }) {
   const { array, highlights } = step;
   const max = Math.max(...array, 1);
   const spacing = 1.0;

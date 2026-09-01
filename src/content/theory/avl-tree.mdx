@@ -1,0 +1,52 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *AVL Tree trả lời câu hỏi: làm sao để BST không bao giờ suy biến thành danh sách liên kết?*
+
+## Bài toán
+
+BST thường có thể bị lệch hẳn nếu dữ liệu chèn vào theo thứ tự tăng/giảm dần, khiến độ phức tạp
+rớt về O(n). Cần một cơ chế giữ cây luôn "cân bằng".
+
+## Ý tưởng của AVL Tree
+
+Với mỗi node, định nghĩa **balance factor** = chiều cao cây con trái − chiều cao cây con phải. AVL
+Tree đảm bảo balance factor của mọi node luôn nằm trong khoảng [-1, 1].
+
+Sau mỗi lần chèn, nếu một node vi phạm điều kiện này, thực hiện **xoay (rotation)** để khôi phục
+cân bằng. Có 4 trường hợp mất cân bằng:
+
+- **Left-Left**: xoay phải tại node lệch.
+- **Right-Right**: xoay trái tại node lệch.
+- **Left-Right**: xoay trái tại con trái, rồi xoay phải tại node lệch.
+- **Right-Left**: xoay phải tại con phải, rồi xoay trái tại node lệch.
+
+Mỗi lần xoay chỉ tốn O(1), và chỉ cần xoay tại node gần gốc nhất bị mất cân bằng là toàn bộ cây
+được cân bằng lại.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Thao tác", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Tìm kiếm", "O(log n)", "Luôn đúng, không có trường hợp xấu"],
+    ["Chèn", "O(log n)", "Bao gồm cả việc xoay nếu cần"],
+    ["Xoá", "O(log n)", "Phức tạp hơn chèn vì có thể cần xoay nhiều lần"],
+  ]}
+/>
+
+So với BST thường, AVL Tree đánh đổi một chút chi phí cập nhật (theo dõi height, kiểm tra balance
+factor) để đảm bảo O(log n) trong *mọi* trường hợp, không chỉ trung bình.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bất kỳ đâu cần một cấu trúc dữ liệu có thứ tự với hiệu năng ổn định, không phụ thuộc thứ tự dữ liệu vào.
+- Bài toán minh hoạ cho khái niệm self-balancing tree trước khi học Red-Black Tree, Splay Tree.
+
+<Quiz
+  question="Balance factor của một node trong AVL Tree được phép nằm trong khoảng nào?"
+  options={["[-2, 2]", "[-1, 1]", "[0, 1]", "Không giới hạn"]}
+  answer={1}
+  correctNote="Đúng — vượt quá [-1, 1] là phải xoay ngay."
+  incorrectNote="Chưa đúng — nhớ lại định nghĩa balance factor và điều kiện AVL."
+/>

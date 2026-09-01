@@ -24,9 +24,12 @@ export const catalogue: CatalogueEntry[] = [
   { slug: "graph-bfs-dfs", name: "Graph: BFS / DFS", group: "Graph", level: "Olympiad", renderMode: "3d", ready: false },
   { slug: "dijkstra-astar", name: "Dijkstra / A*", group: "Graph", level: "Olympiad", renderMode: "3d", ready: false },
   { slug: "union-find", name: "Union-Find / DSU", group: "Graph", level: "Olympiad", renderMode: "3d", ready: false },
-  { slug: "bst-avl", name: "BST / AVL Rotation", group: "Tree", level: "Olympiad", renderMode: "3d", ready: false },
+  { slug: "bst", name: "Binary Search Tree", group: "Tree", level: "Olympiad", renderMode: "3d", ready: true },
+  { slug: "avl-tree", name: "AVL Tree", group: "Tree", level: "Olympiad", renderMode: "3d", ready: true },
+  { slug: "min-heap", name: "Min-Heap", group: "Tree", level: "Olympiad", renderMode: "3d", ready: true },
   { slug: "segment-fenwick-tree", name: "Segment Tree / Fenwick Tree", group: "Tree", level: "Olympiad", renderMode: "3d", ready: false },
-  { slug: "dp-knapsack-lcs-lis", name: "DP: Knapsack / LCS / LIS", group: "DP", level: "Olympiad", renderMode: "3d", ready: false },
+  { slug: "knapsack", name: "0/1 Knapsack", group: "DP", level: "Olympiad", renderMode: "3d", ready: true },
+  { slug: "lcs-lis", name: "DP: LCS / LIS", group: "DP", level: "Olympiad", renderMode: "3d", ready: false },
   { slug: "big-o-playground", name: "Big-O Playground", group: "DP", level: "Cơ bản", renderMode: "3d", ready: false },
 ];
 

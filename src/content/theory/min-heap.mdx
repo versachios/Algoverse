@@ -1,0 +1,48 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Heap không phải là cây theo nghĩa cấu trúc dữ liệu — nó là một mảng, chỉ "trông giống" cây khi vẽ ra.*
+
+## Bài toán
+
+Cần liên tục lấy ra phần tử nhỏ nhất (hoặc lớn nhất) trong một tập số đang thay đổi, nhanh hơn việc
+sort lại toàn bộ mỗi lần.
+
+## Ý tưởng của Min-Heap
+
+Min-Heap là một **cây nhị phân gần-hoàn-chỉnh** (complete binary tree) thoả bất biến: giá trị mỗi
+node luôn ≤ giá trị 2 con của nó. Vì vậy gốc luôn là phần tử nhỏ nhất.
+
+Điểm đặc biệt: heap không cần con trỏ `left`/`right` — vì cây luôn gần-hoàn-chỉnh, ta lưu trực tiếp
+trên **mảng phẳng**: với node ở chỉ số `i`, con trái ở `2i+1`, con phải ở `2i+2`, cha ở `(i-1)/2`.
+
+- **Chèn**: thêm vào cuối mảng, rồi "nổi lên" (sift up) — so sánh và đổi chỗ với cha cho đến khi
+  thoả bất biến.
+- **Lấy phần tử nhỏ nhất**: lấy gốc, đưa phần tử cuối mảng lên gốc, rồi "chìm xuống" (sift down) —
+  đổi chỗ với con nhỏ hơn cho đến khi thoả bất biến trở lại.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Thao tác", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Xem phần tử nhỏ nhất", "O(1)", "Luôn ở chỉ số 0"],
+    ["Chèn", "O(log n)", "Sift up tối đa bằng chiều cao cây"],
+    ["Lấy ra phần tử nhỏ nhất", "O(log n)", "Sift down tối đa bằng chiều cao cây"],
+    ["Xây heap từ mảng có sẵn", "O(n)", "Nhanh hơn chèn từng phần tử — build-heap"],
+  ]}
+/>
+
+## Ứng dụng / dạng bài hay gặp
+
+- Priority Queue (`priority_queue` trong C++ STL) — nền tảng của thuật toán Dijkstra, Prim.
+- Heap Sort: liên tục lấy phần tử nhỏ nhất ra để có mảng đã sắp xếp.
+- Bài toán "top K phần tử" trong dòng dữ liệu liên tục.
+
+<Quiz
+  question="Với node ở chỉ số i trong mảng heap, con trái của nó nằm ở chỉ số nào?"
+  options={["i + 1", "2i", "2i + 1", "i / 2"]}
+  answer={2}
+  correctNote="Chính xác — công thức chỉ số chuẩn cho complete binary tree lưu trên mảng."
+  incorrectNote="Chưa đúng — thử vẽ heap 3 tầng và đánh số node theo thứ tự duyệt mức (level-order)."
+/>

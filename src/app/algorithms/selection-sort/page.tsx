@@ -5,7 +5,7 @@ import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/selection-sort.mdx";
 
 export const metadata: Metadata = {
-  title: "Selection Sort — Lý thuyết & Mô phỏng trực quan | Algo3D",
+  title: "Selection Sort — Lý thuyết & Mô phỏng trực quan | Algoverse",
   description:
     "Học Selection Sort qua lý thuyết, so sánh với Bubble Sort và mô phỏng 3D từng bước tìm phần tử nhỏ nhất.",
 };

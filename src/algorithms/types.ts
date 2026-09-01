@@ -26,8 +26,8 @@ export interface IndexHighlight {
   label?: string; // e.g. "i", "j", "left", "right"
 }
 
-/** A single snapshot yielded by an algorithm generator. */
-export interface AlgorithmStep {
+/** A single snapshot yielded by an algorithm generator (array-shaped data: sorts, searches). */
+export interface ArrayStep {
   /** Full array state at this point in time. */
   array: number[];
   /** Which indices to highlight, and how. */
@@ -38,6 +38,63 @@ export interface AlgorithmStep {
   explanation: string;
   /** Optional counters to surface in the instrument panel. */
   stats?: Record<string, number>;
+}
+
+/** Node role for tree-shaped algorithms (BST, AVL, Min-Heap). */
+export type TreeNodeRole =
+  | "idle"
+  | "comparing"
+  | "path"
+  | "found"
+  | "inserted"
+  | "flagged" // e.g. marked for deletion, or an imbalanced AVL node
+  | "highlight"; // e.g. rotation pivot, heap sift target
+
+export interface TreeNodeData {
+  id: string;
+  value: number;
+  left: string | null;
+  right: string | null;
+}
+
+/** A single snapshot for tree-shaped algorithms. Shares codeLine/explanation/stats
+ *  with ArrayStep so CodePanel/StepTrace work unchanged; `highlights` stays empty
+ *  since tick-coloring in StepTrace is index-based and doesn't apply here. */
+export interface TreeStep {
+  kind: "tree";
+  nodes: Record<string, TreeNodeData>;
+  rootId: string | null;
+  nodeStates: Record<string, TreeNodeRole>;
+  edgeHighlight?: [string, string] | null;
+  highlights: IndexHighlight[]; // always [] — kept for StepTrace compatibility
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+/** Cell role for grid-shaped algorithms (DP tables). */
+export type GridCellRole = "idle" | "computing" | "source" | "filled";
+
+/** A single snapshot for grid-shaped algorithms (2D DP tables). */
+export interface GridStep {
+  kind: "grid";
+  grid: number[][];
+  cellStates: Record<string, GridCellRole>; // key = `${row}-${col}`
+  highlights: IndexHighlight[]; // always [] — kept for StepTrace compatibility
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+export type AlgorithmStep = ArrayStep | TreeStep | GridStep;
+
+/** Runtime guards — ArrayStep is the implicit default (no `kind` field) so the
+ *  5 existing array algorithms never needed editing when this union was introduced. */
+export function isTreeStep(step: AlgorithmStep): step is TreeStep {
+  return (step as TreeStep).kind === "tree";
+}
+export function isGridStep(step: AlgorithmStep): step is GridStep {
+  return (step as GridStep).kind === "grid";
 }
 
 export interface AlgorithmMeta {
@@ -53,6 +110,8 @@ export interface AlgorithmModule {
   meta: AlgorithmMeta;
   /** The C++ source shown in the code panel; codeLine in steps indexes into this, split by "\n". */
   code: string;
-  /** Builds the generator for a given input array. */
+  /** Builds the generator for a given input. For tree/heap algorithms, `input` is the
+   *  sequence of values to insert in order. For DP algorithms, see each module's own
+   *  doc comment for how it packs extra parameters (e.g. capacity) into the array. */
   run: (input: number[]) => Generator<AlgorithmStep, void, unknown>;
 }

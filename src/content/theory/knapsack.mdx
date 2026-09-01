@@ -1,0 +1,55 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Knapsack là bài mở đầu kinh điển của quy hoạch động — nơi "thử mọi tập con" (2ⁿ) được thay bằng một bảng 2 chiều.*
+
+## Bài toán
+
+Cho n món đồ, mỗi món có trọng lượng và giá trị riêng, và một cái túi sức chứa W. Chọn tập con các
+món sao cho tổng trọng lượng ≤ W và tổng giá trị lớn nhất — mỗi món chỉ được lấy **0 hoặc 1 lần**
+(đây là lý do gọi là "0/1" Knapsack, khác với bài Unbounded Knapsack cho lấy nhiều lần).
+
+Thử toàn bộ 2ⁿ tập con là quá chậm với n lớn. Quy hoạch động giải quyết bằng cách nhận ra bài toán
+con lặp lại.
+
+## Ý tưởng quy hoạch động
+
+Định nghĩa `dp[i][w]` = giá trị lớn nhất đạt được khi chỉ xét i món đầu tiên, với sức chứa còn lại
+là w. Với món thứ i, chỉ có 2 lựa chọn:
+
+- **Không lấy**: `dp[i][w] = dp[i-1][w]`
+- **Lấy** (chỉ khi `weight[i] <= w`): `dp[i][w] = dp[i-1][w - weight[i]] + value[i]`
+
+Kết quả là giá trị lớn hơn trong 2 lựa chọn trên. Điền bảng theo thứ tự hàng trên xuống hàng dưới,
+đáp án cuối cùng nằm ở `dp[n][W]`.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n × W)", "Điền n × (W+1) ô, mỗi ô O(1)"],
+    ["Không gian", "O(n × W)", "Có thể tối ưu còn O(W) vì mỗi hàng chỉ cần hàng trước"],
+    ["So với brute-force", "O(2ⁿ) → O(n × W)", "Đánh đổi thời gian lấy không gian — bản chất của DP"],
+  ]}
+/>
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bài toán phân bổ ngân sách/tài nguyên có giới hạn.
+- Biến thể: Unbounded Knapsack (lấy nhiều lần), Bounded Knapsack (giới hạn số lần lấy mỗi món).
+- Nền tảng tư duy cho LCS (Longest Common Subsequence), LIS (Longest Increasing Subsequence) — các
+  bài DP 2 chiều khác cùng nhóm.
+
+<Quiz
+  question="Trong 0/1 Knapsack, khi nào KHÔNG thể chọn 'lấy' món thứ i tại dp[i][w]?"
+  options={[
+    "Khi giá trị món đó bằng 0",
+    "Khi weight[i] > w",
+    "Khi i = 1",
+    "Không có trường hợp nào bị cấm",
+  ]}
+  answer={1}
+  correctNote="Đúng — nếu món nặng hơn sức chứa còn lại, chỉ còn lựa chọn 'không lấy'."
+  incorrectNote="Chưa đúng — nhìn lại điều kiện `weight[i] <= w` trong công thức."
+/>

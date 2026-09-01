@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { usePlaybackStore } from "@/store/playback-store";
 import { BarsScene } from "@/components/render-3d/BarsScene";
+import { TreeScene } from "@/components/render-3d/TreeScene";
+import { GridScene } from "@/components/render-3d/GridScene";
 import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
 import { CodePanel } from "@/components/CodePanel";
 import { StepTrace } from "@/components/StepTrace";
 import { getAlgorithm } from "@/algorithms";
+import { isGridStep, isTreeStep } from "@/algorithms/types";
 
 const DEFAULT_INPUTS: Record<string, number[]> = {
   "bubble-sort": [6, 2, 9, 4, 1, 7, 3],
@@ -14,7 +17,23 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   "insertion-sort": [6, 2, 9, 4, 1, 7, 3],
   "binary-search": [1, 3, 4, 6, 8, 9, 11, 14],
   "linear-search": [6, 2, 9, 4, 1, 7, 3],
+  bst: [50, 30, 70, 20, 40, 60, 80, 10],
+  "avl-tree": [10, 20, 30, 40, 50, 25],
+  "min-heap": [9, 4, 7, 1, 8, 3, 6],
+  // Knapsack packs its input as [capacity, w1, v1, w2, v2, ...]
+  knapsack: [8, 2, 3, 3, 4, 4, 5, 5, 6],
 };
+
+// Tree algorithms take "sequence of values to insert"; knapsack takes a packed
+// [capacity, w1, v1, ...] list — both still fit AlgorithmModule.run(number[]),
+// so only the label/hint text needs to change per slug.
+const INPUT_LABELS: Record<string, string> = {
+  bst: "Dãy giá trị sẽ chèn lần lượt (2–12 số, cách nhau bởi dấu phẩy)",
+  "avl-tree": "Dãy giá trị sẽ chèn lần lượt (2–12 số, cách nhau bởi dấu phẩy)",
+  "min-heap": "Dãy giá trị sẽ chèn lần lượt (2–12 số, cách nhau bởi dấu phẩy)",
+  knapsack: "Sức chứa, rồi từng cặp (trọng lượng, giá trị) — vd: 8, 2,3, 3,4, 4,5",
+};
+const DEFAULT_LABEL = "Mảng đầu vào (2–12 số, cách nhau bởi dấu phẩy)";
 
 export function AlgorithmWorkbench({ slug }: { slug: string }) {
   const algorithm = getAlgorithm(slug);
@@ -34,7 +53,8 @@ export function AlgorithmWorkbench({ slug }: { slug: string }) {
       .split(",")
       .map((s) => Number(s.trim()))
       .filter((n) => Number.isFinite(n));
-    if (parsed.length >= 2 && parsed.length <= 12) {
+    const maxLen = slug === "knapsack" ? 21 : 12;
+    if (parsed.length >= 2 && parsed.length <= maxLen) {
       load(algorithm, parsed);
     }
   }
@@ -44,7 +64,11 @@ export function AlgorithmWorkbench({ slug }: { slug: string }) {
       <div className="flex flex-col gap-3">
         <div className="blueprint-frame rounded-md h-[420px] overflow-hidden">
           {step ? (
-            algorithm.meta.renderMode === "3d" ? (
+            isTreeStep(step) ? (
+              <TreeScene step={step} />
+            ) : isGridStep(step) ? (
+              <GridScene step={step} />
+            ) : algorithm.meta.renderMode === "3d" ? (
               <BarsScene step={step} />
             ) : (
               <ArrayRow2D step={step} />
@@ -61,7 +85,7 @@ export function AlgorithmWorkbench({ slug }: { slug: string }) {
       <div className="flex flex-col gap-3">
         <div className="blueprint-frame rounded-md p-3 flex flex-col gap-2">
           <label className="text-[11px] uppercase tracking-widest text-[var(--color-muted)] font-mono-tech">
-            Mảng đầu vào (2–12 số, cách nhau bởi dấu phẩy)
+            {INPUT_LABELS[slug] ?? DEFAULT_LABEL}
           </label>
           <div className="flex gap-2">
             <input

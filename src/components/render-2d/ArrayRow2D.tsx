@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, OrthographicCamera, Text } from "@react-three/drei";
-import type { AlgorithmStep, IndexRole } from "@/algorithms/types";
+import type { ArrayStep, IndexRole } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<IndexRole, string> = {
   default: "#211e1a",
@@ -58,7 +58,7 @@ function Cell({
   );
 }
 
-export function ArrayRow2D({ step, interactive = true }: { step: AlgorithmStep; interactive?: boolean }) {
+export function ArrayRow2D({ step, interactive = true }: { step: ArrayStep; interactive?: boolean }) {
   const { array, highlights } = step;
   const spacing = 1.0;
   const offset = ((array.length - 1) * spacing) / 2;

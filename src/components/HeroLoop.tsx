@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BarsScene } from "@/components/render-3d/BarsScene";
 import { bubbleSort } from "@/algorithms/bubble-sort";
-import type { AlgorithmStep } from "@/algorithms/types";
+import type { ArrayStep } from "@/algorithms/types";
 
 function shuffled() {
   const base = [5, 8, 2, 9, 3, 6, 1];
@@ -11,14 +11,14 @@ function shuffled() {
 }
 
 export function HeroLoop() {
-  const [steps, setSteps] = useState<AlgorithmStep[]>(() => [...bubbleSort.run(shuffled())]);
+  const [steps, setSteps] = useState<ArrayStep[]>(() => [...bubbleSort.run(shuffled())] as ArrayStep[]);
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
       setCursor((c) => {
         if (c + 1 >= steps.length) {
-          setSteps([...bubbleSort.run(shuffled())]);
+          setSteps([...bubbleSort.run(shuffled())] as ArrayStep[]);
           return 0;
         }
         return c + 1;

@@ -5,7 +5,7 @@ import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/bubble-sort.mdx";
 
 export const metadata: Metadata = {
-  title: "Bubble Sort — Lý thuyết & Mô phỏng trực quan | Algo3D",
+  title: "Bubble Sort — Lý thuyết & Mô phỏng trực quan | Algoverse",
   description:
     "Học Bubble Sort qua lý thuyết, ví dụ chạy tay và mô phỏng 3D từng bước: so sánh, đổi chỗ, độ phức tạp O(n²).",
 };

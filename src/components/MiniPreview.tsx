@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { BarsScene } from "@/components/render-3d/BarsScene";
 import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
+import { TreeScene } from "@/components/render-3d/TreeScene";
+import { GridScene } from "@/components/render-3d/GridScene";
 import { getAlgorithm } from "@/algorithms";
-import type { AlgorithmStep } from "@/algorithms/types";
+import { isGridStep, isTreeStep, type AlgorithmStep } from "@/algorithms/types";
 
 const PREVIEW_INPUTS: Record<string, number[]> = {
   "bubble-sort": [5, 2, 8, 3],
@@ -12,6 +14,10 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
   "insertion-sort": [5, 3, 8, 2],
   "binary-search": [1, 3, 5, 7, 9, 11],
   "linear-search": [4, 9, 2, 7, 5],
+  bst: [8, 3, 10, 1, 6],
+  "avl-tree": [10, 20, 30, 15],
+  "min-heap": [7, 3, 9, 1],
+  knapsack: [6, 2, 3, 3, 4, 4, 5],
 };
 
 export function MiniPreview({ slug }: { slug: string }) {
@@ -39,7 +45,11 @@ export function MiniPreview({ slug }: { slug: string }) {
 
   return (
     <div className="h-24 pointer-events-none -mx-1">
-      {algorithm.meta.renderMode === "3d" ? (
+      {isTreeStep(step) ? (
+        <TreeScene step={step} interactive={false} />
+      ) : isGridStep(step) ? (
+        <GridScene step={step} interactive={false} />
+      ) : algorithm.meta.renderMode === "3d" ? (
         <BarsScene step={step} interactive={false} />
       ) : (
         <ArrayRow2D step={step} interactive={false} />
