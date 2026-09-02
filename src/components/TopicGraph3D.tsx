@@ -5,62 +5,133 @@ import { useRouter } from "next/navigation";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Billboard, Line, OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
-import { catalogue } from "@/algorithms/catalogue";
+import { catalogue, groups } from "@/algorithms/catalogue";
 
-// Single necklace layout, in catalogue order — which already follows the
-// suggested learning path — so the graph doubles as a literal timeline of
-// the curriculum instead of an arbitrary cluster of dots.
-function layout() {
-  const total = catalogue.length;
-  const radiusX = 4.6;
-  const radiusY = 2.4;
+const ALGOVERSE_REPO_URL = "https://github.com/versachios/Algoverse";
 
-  const nodes = catalogue.map((item, i) => {
-    const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
-    const wobble = Math.sin(angle * 3) * 0.5; // gentle depth variation, not flat
-    const pos: [number, number, number] = [
-      Math.cos(angle) * radiusX,
-      Math.sin(angle) * radiusY,
-      wobble,
-    ];
-    return { slug: item.slug, name: item.name, ready: item.ready, group: item.group, pos };
+// Solar-system layout: Algoverse itself is the sun at the center (clicking it
+// opens the repo), each catalogue group gets its own orbit ring, and every
+// lesson in that group is a planet drifting around the ring at its own phase.
+function buildOrbits() {
+  const baseRadius = 2.4;
+  const radiusStep = 1.15;
+
+  return groups.map((group, groupIndex) => {
+    const radius = baseRadius + groupIndex * radiusStep;
+    const items = catalogue.filter((c) => c.group === group);
+    const planets = items.map((item, i) => ({
+      slug: item.slug,
+      name: item.name,
+      ready: item.ready,
+      phase: (i / items.length) * Math.PI * 2,
+      // inner orbits sweep faster than outer ones, like real planets
+      speed: 0.22 / Math.sqrt(radius),
+    }));
+    return { group, radius, planets };
   });
-
-  const edges: [THREE.Vector3, THREE.Vector3][] = [];
-  for (let i = 0; i < nodes.length - 1; i++) {
-    edges.push([new THREE.Vector3(...nodes[i].pos), new THREE.Vector3(...nodes[i + 1].pos)]);
-  }
-
-  return { nodes, edges };
 }
 
-function Node({
-  node,
-  onNavigate,
-}: {
-  node: ReturnType<typeof layout>["nodes"][number];
-  onNavigate: (slug: string) => void;
-}) {
+function Sun() {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
   useFrame((_, delta) => {
-    if (!meshRef.current) return;
-    const target = hovered ? 1.6 : 1;
-    meshRef.current.scale.setScalar(
-      THREE.MathUtils.damp(meshRef.current.scale.x, target, 10, delta)
-    );
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.15;
   });
 
   return (
-    <group position={node.pos}>
+    <group>
       <mesh
         ref={meshRef}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        onClick={() => node.ready && onNavigate(node.slug)}
+        onClick={() => window.open(ALGOVERSE_REPO_URL, "_blank", "noopener,noreferrer")}
       >
-        {node.ready ? (
+        <sphereGeometry args={[0.55, 32, 32]} />
+        <meshStandardMaterial
+          color="#d97a4d"
+          emissive="#d97a4d"
+          emissiveIntensity={hovered ? 1.4 : 1}
+          roughness={0.3}
+        />
+      </mesh>
+      <pointLight position={[0, 0, 0]} intensity={1.4} color="#d97a4d" distance={14} />
+      <Billboard position={[0, 0.95, 0]}>
+        <Text
+          fontSize={0.26}
+          color={hovered ? "#ffd9b0" : "#ece7dc"}
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.012}
+          outlineColor="#0d0c0a"
+        >
+          ALGOVERSE
+        </Text>
+      </Billboard>
+      {hovered && (
+        <Billboard position={[0, 0.65, 0]}>
+          <Text
+            fontSize={0.14}
+            color="#8f897d"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.008}
+            outlineColor="#0d0c0a"
+          >
+            mở repo trên GitHub
+          </Text>
+        </Billboard>
+      )}
+    </group>
+  );
+}
+
+function OrbitRing({ radius }: { radius: number }) {
+  const points = useMemo(() => {
+    const pts: [number, number, number][] = [];
+    for (let i = 0; i <= 96; i++) {
+      const a = (i / 96) * Math.PI * 2;
+      pts.push([Math.cos(a) * radius, 0, Math.sin(a) * radius]);
+    }
+    return pts;
+  }, [radius]);
+
+  return <Line points={points} color="#2b2723" lineWidth={1} transparent opacity={0.5} />;
+}
+
+function Planet({
+  planet,
+  radius,
+  onNavigate,
+}: {
+  planet: ReturnType<typeof buildOrbits>[number]["planets"][number];
+  radius: number;
+  onNavigate: (slug: string) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame(({ clock }, delta) => {
+    if (groupRef.current) {
+      const angle = planet.phase + clock.getElapsedTime() * planet.speed;
+      groupRef.current.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+    }
+    if (meshRef.current) {
+      const target = hovered ? 1.6 : 1;
+      meshRef.current.scale.setScalar(THREE.MathUtils.damp(meshRef.current.scale.x, target, 10, delta));
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <mesh
+        ref={meshRef}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={() => planet.ready && onNavigate(planet.slug)}
+      >
+        {planet.ready ? (
           <>
             <sphereGeometry args={[0.15, 20, 20]} />
             <meshStandardMaterial
@@ -81,13 +152,13 @@ function Node({
         <Billboard position={[0, 0.34, 0]}>
           <Text
             fontSize={0.19}
-            color={node.ready ? "#ece7dc" : "#8f897d"}
+            color={planet.ready ? "#ece7dc" : "#8f897d"}
             anchorX="center"
             anchorY="middle"
             outlineWidth={0.01}
             outlineColor="#0d0c0a"
           >
-            {node.name}
+            {planet.name}
           </Text>
         </Billboard>
       )}
@@ -95,37 +166,29 @@ function Node({
   );
 }
 
-function Edges({ edges }: { edges: [THREE.Vector3, THREE.Vector3][] }) {
-  return (
-    <>
-      {edges.map((pts, i) => (
-        <Line key={i} points={pts} color="#2b2723" lineWidth={1} transparent opacity={0.55} />
-      ))}
-    </>
-  );
-}
-
 function Scene() {
   const router = useRouter();
-  const { nodes, edges } = useMemo(() => layout(), []);
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.05;
-  });
+  const orbits = useMemo(() => buildOrbits(), []);
 
   return (
     <>
       <color attach="background" args={["#0d0c0a"]} />
-      <ambientLight intensity={0.7} color="#f2e9dc" />
-      <pointLight position={[0, 0, 6]} intensity={0.9} color="#d97a4d" />
-      <group ref={groupRef}>
-        <Edges edges={edges} />
-        {nodes.map((n) => (
-          <Node key={n.slug} node={n} onNavigate={(slug) => router.push(`/algorithms/${slug}`)} />
-        ))}
-      </group>
-      <OrbitControls enablePan={false} minDistance={5} maxDistance={13} />
+      <ambientLight intensity={0.5} color="#f2e9dc" />
+      <Sun />
+      {orbits.map(({ group, radius, planets }) => (
+        <group key={group}>
+          <OrbitRing radius={radius} />
+          {planets.map((planet) => (
+            <Planet
+              key={planet.slug}
+              planet={planet}
+              radius={radius}
+              onNavigate={(slug) => router.push(`/algorithms/${slug}`)}
+            />
+          ))}
+        </group>
+      ))}
+      <OrbitControls enablePan={false} minDistance={6} maxDistance={16} />
     </>
   );
 }
@@ -133,11 +196,11 @@ function Scene() {
 export function TopicGraph3D() {
   return (
     <div className="relative h-full w-full">
-      <Canvas camera={{ position: [0, 0.6, 9.5], fov: 42 }} dpr={[1, 1.5]}>
+      <Canvas camera={{ position: [0, 5, 12], fov: 42 }} dpr={[1, 1.5]}>
         <Scene />
       </Canvas>
       <div className="pointer-events-none absolute bottom-3 left-3 font-mono-tech text-[11px] text-[var(--color-muted)] uppercase tracking-widest">
-        kéo để xoay · di chuột vào node để xem tên · nhấp để mở bài học
+        kéo để xoay · di chuột vào node để xem tên · nhấp hành tinh trung tâm để mở repo, nhấp bài học để mở
       </div>
     </div>
   );

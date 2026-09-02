@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { TopicGraph3D } from "@/components/TopicGraph3D";
 import { TopicBrowser } from "@/components/TopicBrowser";
 import { Footer } from "@/components/Footer";
@@ -23,7 +24,8 @@ export default function Home() {
           ALGOVERSE
         </span>
         <nav className="hidden sm:flex gap-5 text-xs text-[var(--color-muted)] font-mono-tech uppercase tracking-widest">
-          <a href="#chu-de" className="hover:text-[var(--color-text)]">Chủ đề</a>
+          <Link href="/?category=Cấu trúc dữ liệu#chu-de" className="hover:text-[var(--color-text)]">Cấu trúc dữ liệu</Link>
+          <Link href="/?category=Giải thuật#chu-de" className="hover:text-[var(--color-text)]">Giải thuật</Link>
           <a href="#lo-trinh" className="hover:text-[var(--color-text)]">Lộ trình học</a>
         </nav>
       </header>
@@ -61,7 +63,9 @@ export default function Home() {
         <h2 className="font-display font-semibold text-2xl mb-4 flex items-center gap-2">
           <span className="label-dot" /> Chủ đề
         </h2>
-        <TopicBrowser />
+        <Suspense fallback={null}>
+          <TopicBrowser />
+        </Suspense>
       </section>
 
       <section id="lo-trinh" className="mx-auto max-w-6xl w-full px-4 md:px-6 py-10">

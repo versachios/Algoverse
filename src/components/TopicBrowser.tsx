@@ -2,24 +2,46 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
-import { catalogue, levels, type CatalogueEntry } from "@/algorithms/catalogue";
+import { catalogue, levels, categories, type CatalogueEntry, type Category } from "@/algorithms/catalogue";
 import { MiniPreview } from "@/components/MiniPreview";
 
 export function TopicBrowser() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get("category");
+  const initialCategory: Category | "Tất cả" =
+    categoryParam === "Cấu trúc dữ liệu" || categoryParam === "Giải thuật" ? categoryParam : "Tất cả";
+
   const [query, setQuery] = useState("");
   const [level, setLevel] = useState<CatalogueEntry["level"] | "Tất cả">("Tất cả");
+  const [category, setCategory] = useState<Category | "Tất cả">(initialCategory);
 
   const filtered = useMemo(() => {
     return catalogue.filter((c) => {
       const matchesQuery = c.name.toLowerCase().includes(query.trim().toLowerCase());
       const matchesLevel = level === "Tất cả" || c.level === level;
-      return matchesQuery && matchesLevel;
+      const matchesCategory = category === "Tất cả" || c.category === category;
+      return matchesQuery && matchesLevel && matchesCategory;
     });
-  }, [query, level]);
+  }, [query, level, category]);
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex gap-1.5 flex-wrap">
+        {(["Tất cả", ...categories] as const).map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            className={clsx(
+              "control-btn",
+              category === cat && "!border-[var(--color-signal-amber)] !text-[var(--color-signal-amber)]"
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
         <input
           value={query}
