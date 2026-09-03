@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BarsScene } from "@/components/render-3d/BarsScene";
 import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
 import { TreeScene } from "@/components/render-3d/TreeScene";
@@ -41,7 +41,39 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
   kadane: [-2, 1, -3, 4, -1, 2, 1],
 };
 
+/**
+ * Each preview mounts its own <Canvas>, and each <Canvas> opens its own WebGL
+ * context. Browsers cap the number of live WebGL contexts per page (commonly
+ * ~16) — once the catalogue grew past that, the oldest contexts started
+ * getting force-killed ("Too many active WebGL contexts. Oldest context
+ * will be lost."), which is what caused previews to go blank seemingly at
+ * random across the whole site, not just in newly-added algorithms.
+ *
+ * Fix: only mount the actual <Canvas>-based scene while the card is inside
+ * (or near) the viewport. Scrolling a card away unmounts its scene, which
+ * also frees its WebGL context, so at most a handful of contexts exist at
+ * once no matter how many cards the catalogue has.
+ */
+function useInView<T extends HTMLElement>(rootMargin = "200px") {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [rootMargin]);
+
+  return { ref, inView };
+}
+
 export function MiniPreview({ slug }: { slug: string }) {
+  const { ref, inView } = useInView<HTMLDivElement>();
   const algorithm = getAlgorithm(slug);
   const [steps, setSteps] = useState<AlgorithmStep[]>(() => [
     ...algorithm.run(PREVIEW_INPUTS[slug] ?? [4, 2, 6, 1]),
@@ -49,6 +81,7 @@ export function MiniPreview({ slug }: { slug: string }) {
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
+    if (!inView) return; // pause stepping while off-screen too — no point animating what isn't rendered
     const id = setInterval(() => {
       setCursor((c) => {
         if (c + 1 >= steps.length) {
@@ -59,14 +92,13 @@ export function MiniPreview({ slug }: { slug: string }) {
       });
     }, 700);
     return () => clearInterval(id);
-  }, [steps.length, algorithm, slug]);
+  }, [inView, steps.length, algorithm, slug]);
 
   const step = steps[cursor];
-  if (!step) return null;
 
   return (
-    <div className="h-24 pointer-events-none -mx-1">
-      {isTreeStep(step) ? (
+    <div ref={ref} className="h-24 pointer-events-none -mx-1">
+      {!inView || !step ? null : isTreeStep(step) ? (
         <TreeScene step={step} interactive={false} />
       ) : isRbtStep(step) ? (
         <RbtScene step={step} interactive={false} />

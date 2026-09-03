@@ -1,31 +1,7 @@
 "use client";
 
-import { Html, Text as DreiText } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import type { TextProps as DreiTextProps } from "@react-three/drei";
-
-let instancingSupported: boolean | null = null;
-
-function supportsInstancing(): boolean {
-  if (instancingSupported !== null) return instancingSupported;
-  instancingSupported = false;
-  try {
-    const canvas = document.createElement("canvas");
-    const gl2 = canvas.getContext("webgl2");
-    if (gl2) {
-      instancingSupported = true;
-      return true;
-    }
-    const gl =
-      canvas.getContext("webgl") ||
-      (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
-    if (gl && (gl.getExtension("ANGLE_instanced_arrays") || gl.getExtension("OES_vertex_array_object"))) {
-      instancingSupported = true;
-    }
-  } catch {
-    instancingSupported = false;
-  }
-  return instancingSupported;
-}
 
 type Text3DProps = DreiTextProps;
 
@@ -43,17 +19,21 @@ function anchorAlign(anchorX: string | undefined, anchorY: string | undefined) {
   return { textAlign, alignItems };
 }
 
-function HtmlText(props: Text3DProps) {
-  const {
-    position,
-    color,
-    fontSize = 0.2,
-    anchorX,
-    anchorY,
-    outlineColor,
-    children,
-    ...rest
-  } = props;
+/**
+ * Drop-in replacement for @react-three/drei <Text>. Always renders a DOM
+ * overlay (<Html>) instead of troika three-text.
+ *
+ * troika-three-text generates its glyph atlas via a hidden WebGL context and
+ * hard-depends on the ANGLE_instanced_arrays extension. Feature-detecting
+ * that extension is NOT reliable: some browsers (e.g. Brave with Shields'
+ * anti-fingerprinting WebGL restrictions) report a working webgl2 context
+ * yet still throw "ANGLE_instanced_arrays not supported" deep inside
+ * troika's own fallback path, as an unhandled promise rejection we can't
+ * catch from the outside. So rather than feature-detect, we just never use
+ * troika at all — the DOM overlay works identically on every GPU/browser.
+ */
+export function Text3D(props: Text3DProps) {
+  const { position, color, fontSize = 0.2, anchorX, anchorY, outlineColor, children, ...rest } = props;
 
   const { textAlign, alignItems } = anchorAlign(anchorX as string, anchorY as string);
   const pos = toVec(position as [number, number, number]);
@@ -79,18 +59,3 @@ function HtmlText(props: Text3DProps) {
     </Html>
   );
 }
-
-/**
- * Drop-in replacement for @react-three/drei <Text>. Renders troika three-text
- * on GPUs that support instanced rendering, and transparently falls back to a
- * DOM overlay (<Html>) when ANGLE_instanced_arrays / WebGL2 instancing is not
- * available — avoiding the "ANGLE_instanced_arrays not supported" runtime error.
- */
-export function Text3D(props: Text3DProps) {
-  if (supportsInstancing()) {
-    return <DreiText {...props} />;
-  }
-  return <HtmlText {...props} />;
-}
-
-export { supportsInstancing };
