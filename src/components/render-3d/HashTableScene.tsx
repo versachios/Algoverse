@@ -25,7 +25,14 @@ export function HashTableScene({ step }: { step: HashStep }) {
       <color attach="background" args={["#0d0c0a"]} />
       <ambientLight intensity={0.7} color="#f2e9dc" />
       <directionalLight position={[3, 5, 4]} intensity={0.9} color="#e0a67c" castShadow />
-      <OrthographicCamera makeDefault position={[0, 3, 6]} zoom={numBuckets > 6 ? 30 : 55} near={0.1} far={50} />
+      <OrthographicCamera
+        makeDefault
+        position={[0, 3, 6]}
+        zoom={numBuckets > 6 ? 30 : 55}
+        near={0.1}
+        far={50}
+        onUpdate={(c) => c.lookAt(0, 0, 0)}
+      />
 
       {Array.from({ length: numBuckets }, (_, b) => (
         <Text3D key={`lbl-${b}`} position={[slotX(b), 1.1, 0.1]} fontSize={0.2} color="#8f897d" anchorX="center" anchorY="middle">

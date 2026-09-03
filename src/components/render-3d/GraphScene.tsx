@@ -56,7 +56,7 @@ function NodeSphere({
           metalness={0.15}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle">
         {label}
       </Text3D>
       {showDist && (

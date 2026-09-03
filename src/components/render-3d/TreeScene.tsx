@@ -53,7 +53,7 @@ function NodeSphere({ node, role, x, y }: { node: TreeNodeData; role: TreeNodeRo
           metalness={0.15}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle">
         {String(node.value)}
       </Text3D>
     </group>
