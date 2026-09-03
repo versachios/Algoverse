@@ -1,0 +1,43 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Kadane tìm tổng dãy con liên tiếp lớn nhất chỉ trong O(n) — một ví dụ điển hình của quy hoạch động tại chỗ.*
+
+## Bài toán
+
+Cho mảng số nguyên `a[]` (có thể chứa số âm). Tìm tổng lớn nhất của một **dãy con liên tiếp** bất kỳ.
+
+Ví dụ: `[-2, 1, -3, 4, -1, 2, 1, -5, 4]` → dãy con `[4, -1, 2, 1]` có tổng `6`.
+
+## Ý tưởng quy hoạch động
+
+Định nghĩa `dp[i]` = tổng lớn nhất của dãy con liên tiếp kết thúc tại vị trí i. Tại mỗi vị trí, chỉ có hai lựa chọn:
+
+- **Tiếp tục** dãy trước: `dp[i] = dp[i-1] + a[i]`
+- **Bắt đầu mới** tại i: `dp[i] = a[i]`
+
+Kết quả: `dp[i] = max(a[i], dp[i-1] + a[i])`. Duy trì biến `max_sum` để ghi nhận tổng lớn nhất gặp được.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n)", "Duyệt mảng một lần"],
+    ["Không gian", "O(1)", "Chỉ cần hai biến current_sum và max_sum"],
+    ["So với brute-force", "O(n²) → O(n)", "Bỏ qua việc thử mọi cặp (i, j)"],
+  ]}
+/>
+
+<Quiz
+  question="Tại vị trí i, khi nào ta quyết định BẮT ĐẦU dãy con mới?"
+  options={[
+    "Khi a[i] dương",
+    "Khi dp[i-1] + a[i] < a[i] (tức dp[i-1] âm)",
+    "Luôn luôn — mỗi vị trí là một dãy mới",
+    "Khi i = 0",
+  ]}
+  answer={1}
+  correctNote="Đúng — nếu dãy trước đó có tổng âm thì kéo dài chỉ làm giảm, nên bắt đầu mới."
+  incorrectNote="Chưa đúng — điều kiện là dp[i-1] + a[i] < a[i], tức dãy trước đó có tổng âm."
+/>

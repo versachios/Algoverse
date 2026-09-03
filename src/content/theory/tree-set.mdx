@@ -1,0 +1,41 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Tree Set (std::set) lưu trữ khóa duy nhất trên cây đỏ-đen có thứ tự — giống Tree Map nhưng chỉ có key, không có value.*
+
+## Cấu trúc
+
+Tree Set sử dụng **c cây đỏ-đen** giống Tree Map, nhưng mỗi nút chỉ chứa một **key** (không có value). Key luôn được sắp xếp tăng dần theo traversal inorder.
+
+## Thao tác chính
+
+- **insert(key)**: Chèn key vào cây, cân bằng lại. O(log n).
+- **find(key)**: Kiểm tra key có tồn tại trên đường đi từ gốc. O(log n).
+- **erase(key)**: Xóa key, cân bằng lại. O(log n).
+- **lower_bound(key)**: Tìm key lớn hơn hoặc bằng key cho trước. O(log n).
+
+## So sánh Tree Set vs Hash Set
+
+<ComplexityTable
+  headers={["Thao tác", "Tree Set (std::set)", "Hash Set (unordered_set)"]}
+  rows={[
+    ["Insert", "O(log n) luôn", "O(1) trung bình"],
+    ["Find", "O(log n) luôn", "O(1) trung bình"],
+    ["Erase", "O(log n) luôn", "O(1) trung bình"],
+    ["Duyệt theo thứ tự", "Có", "Không"],
+    ["lower_bound", "O(log n)", "Không hỗ trợ"],
+  ]}
+/>
+
+<Quiz
+  question="Khi cần tìm key nhỏ nhất lớn hơn hoặc bằng X, nên dùng cấu trúc nào?"
+  options={[
+    "Hash Set (unordered_set)",
+    "Tree Set (std::set) với lower_bound",
+    "Mảng thường",
+    "Stack",
+  ]}
+  answer={1}
+  correctNote="Đúng — Tree Set hỗ trợ lower_bound, tìm key gần nhất theo thứ tự trong O(log n)."
+  incorrectNote="Chưa đúng — Hash Set không duy trì thứ tự, không hỗ trợ lower_bound."
+/>

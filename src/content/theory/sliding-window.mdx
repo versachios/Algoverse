@@ -1,0 +1,45 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Sliding Window tối ưu bài toán con liên tiếp bằng cách duy trì một cửa sổ, mỗi bước chỉ cập nhật O(1) thay vì tính lại từ đầu.*
+
+## Bài toán
+
+Cho mảng `a[]` độ dài n, tìm tổng của mọi cửa sổ con có độ dài K. Bắt đầu từ vị trí 0, mỗi bước dịch cửa số sang phải một vị trí.
+
+## Ý tưởng
+
+Thay vì tính lại tổng mỗi cửa số từ đầu (O(K) mỗi bước), ta tận dụng kết quả bước trước:
+
+1. Tính tổng cửa số đầu tiên: `window_sum = a[0] + a[1] + ... + a[K-1]`.
+2. Mỗi bước dịch sang phải: **trừ** phần tử ngoài bên trái, **cộng** phần tử mới bên phải.
+
+```
+window_sum = window_sum - a[left] + a[right]
+```
+
+Nhờ vậy mỗi bước chỉ O(1), tổng cộng O(n).
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n)", "Mỗi phần tử vào/ra cửa số đúng một lần"],
+    ["Không gian", "O(1)", "Chỉ cần biến lưu tổng tạm"],
+    ["So với brute-force", "O(n × K) → O(n)", "Tối ưu K lần bằng cách khai thác tính liên tục"],
+  ]}
+/>
+
+<Quiz
+  question="Khi dịch cửa số sang phải, ta cập nhật tổng như thế nào?"
+  options={[
+    "Tính lại toàn bộ tổng từ đầu",
+    "Trừ phần tử rời đi, cộng phần tử mới đến",
+    "Chỉ cộng phần tử mới, không trừ gì",
+    "Nhân tổng với K rồi chia lại",
+  ]}
+  answer={1}
+  correctNote="Đúng — mỗi bước chỉ trừ phần tử ngoài trái và cộng phần tử mới bên phải."
+  incorrectNote="Chưa đúng — nếu tính lại từ đầu sẽ mất O(K), không còn hiệu quả."
+/>

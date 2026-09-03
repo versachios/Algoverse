@@ -5,8 +5,18 @@ import { BarsScene } from "@/components/render-3d/BarsScene";
 import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
 import { TreeScene } from "@/components/render-3d/TreeScene";
 import { GridScene } from "@/components/render-3d/GridScene";
+import { GraphScene } from "@/components/render-3d/GraphScene";
+import { HashTableScene } from "@/components/render-3d/HashTableScene";
+import { RbtScene } from "@/components/render-3d/RbtScene";
 import { getAlgorithm } from "@/algorithms";
-import { isGridStep, isTreeStep, type AlgorithmStep } from "@/algorithms/types";
+import {
+  isGridStep,
+  isGraphStep,
+  isHashStep,
+  isRbtStep,
+  isTreeStep,
+  type AlgorithmStep,
+} from "@/algorithms/types";
 
 const PREVIEW_INPUTS: Record<string, number[]> = {
   "bubble-sort": [5, 2, 8, 3],
@@ -18,6 +28,17 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
   "avl-tree": [10, 20, 30, 15],
   "min-heap": [7, 3, 9, 1],
   knapsack: [6, 2, 3, 3, 4, 4, 5],
+  dijkstra: [0, 5, 6, 0, 1, 2, 0, 2, 6, 1, 3, 1, 2, 3, 1, 1, 4, 3, 3, 4, 2],
+  bfs: [0, 5, 6, 0, 1, 0, 0, 2, 0, 1, 3, 0, 2, 3, 0, 1, 4, 0, 3, 4, 0],
+  dfs: [0, 5, 6, 0, 1, 0, 0, 2, 0, 1, 3, 0, 2, 3, 0, 1, 4, 0, 3, 4, 0],
+  "union-find": [5, 4, 1, 0, 1, 1, 2, 3, 1, 1, 3, 1, 3, 4],
+  "unordered-map": [5, 5, 1, 12, 5, 1, 25, 2, 1, 35, 9, 3, 35, 0, 3, 99, 0],
+  "unordered-set": [5, 5, 1, 12, 0, 1, 25, 0, 1, 35, 0, 3, 25, 0, 0, 12, 0],
+  "tree-map": [6, 1, 10, 5, 1, 20, 2, 1, 30, 9, 1, 25, 4, 3, 30, 0],
+  "tree-set": [5, 1, 10, 0, 1, 20, 0, 1, 30, 0, 3, 25, 0],
+  "two-pointers": [10, 1, 3, 4, 6, 8, 9],
+  "sliding-window": [3, 7, 2, 5, 1, 8],
+  kadane: [-2, 1, -3, 4, -1, 2, 1],
 };
 
 export function MiniPreview({ slug }: { slug: string }) {
@@ -47,8 +68,14 @@ export function MiniPreview({ slug }: { slug: string }) {
     <div className="h-24 pointer-events-none -mx-1">
       {isTreeStep(step) ? (
         <TreeScene step={step} interactive={false} />
+      ) : isRbtStep(step) ? (
+        <RbtScene step={step} interactive={false} />
+      ) : isHashStep(step) ? (
+        <HashTableScene step={step} />
       ) : isGridStep(step) ? (
         <GridScene step={step} interactive={false} />
+      ) : isGraphStep(step) ? (
+        <GraphScene step={step} interactive={false} />
       ) : algorithm.meta.renderMode === "3d" ? (
         <BarsScene step={step} interactive={false} />
       ) : (

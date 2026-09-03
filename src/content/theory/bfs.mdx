@@ -1,0 +1,47 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *BFS "lan tỏa như sóng": duyệt đỉnh theo từng tầng, mỗi tầng cách đỉnh nguồn một số cạnh — chính là công cụ tìm đường đi ngắn nhất theo số cạnh.*
+
+## Bài toán
+
+Cho đồ thị (vô hướng hoặc có hướng) và một đỉnh nguồn **S**. Cần thăm mọi đỉnh **đến được** từ S, theo thứ tự khoảng cách (số cạnh) tăng dần.
+
+## Ý tưởng
+
+Dùng một **hàng đợi (queue, FIFO)** và mảng `dist[]` đánh dấu đã thăm:
+
+1. Đẩy S vào hàng đợi, `dist[S] = 0`.
+2. Lặp: lấy **đầu** hàng đợi ra là `u`, với mỗi đỉnh kề `v` chưa thăm → đặt `dist[v] = dist[u] + 1`, đẩy `v` vào **cuối** hàng đợi.
+
+Nhờ FIFO, các đỉnh được xử lý đúng theo thứ tự tầng: tầng 0 (S), tầng 1 (kề S), tầng 2… Nên `dist[v]` đúng bằng **số cạnh ít nhất** từ S đến v.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(V + E)", "Mỗi đỉnh vào/ra hàng đợi một lần, mỗi cạnh xét một lần"],
+    ["Không gian", "O(V)", "Hàng đợi và mảng dist"],
+    ["So với DFS", "—", "BFS cho đường đi ngắn nhất theo cạnh; DFS thích hợp liên thông/chu trình"],
+  ]}
+/>
+
+## Ứng dụng
+
+- Tìm đường đi ngắn nhất **theo số cạnh** (trọng số bằng nhau).
+- Kiểm tra tính liên thông, đếm thành phần liên thông.
+- Xây dựng cây BFS, giải bài bfs trên lưới / mê cung (cùng tư duy như Flood-fill).
+
+<Quiz
+  question="BFS thăm các đỉnh theo thứ tự nào?"
+  options={[
+    "Thứ tự ngẫu nhiên phụ thuộc dữ liệu",
+    "Đi sâu vào một nhánh rồi quay lui",
+    "Theo từng tầng, cách nguồn một số cạnh tăng dần",
+    "Theo trọng số cạnh trong đồ thị có trọng số",
+  ]}
+  answer={2}
+  correctNote="Đúng — hàng đợi FIFO khiến BFS duyệt theo bề rộng, từng tầng cách nguồn tăng dần."
+  incorrectNote="Chưa đúng — BFS dùng hàng đợi FIFO nên duyệt theo tầng, không đi sâu trước."
+/>

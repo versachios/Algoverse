@@ -1,0 +1,55 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Dijkstra là nền tảng của mọi bài "đường đi ngắn nhất" trên đồ thị — tư duy "tham ăn kết hợp thư giãn" giúp bạn giải hàng loạt bài lập trình thi đấu.*
+
+## Bài toán
+
+Cho đồ thị có hướng hoặc vô hướng với **n** đỉnh, các cạnh mang trọng số **không âm**, và một đỉnh nguồn **S**.
+Tìm đường đi ngắn nhất (theo tổng trọng số) từ **S** đến **mọi đỉnh** khác.
+
+> ⚠️ Điều kiện quan trọng: **trọng số ≥ 0**. Nếu có cạnh âm, Dijkstra không đúng — khi đó dùng Bellman-Ford.
+
+## Ý tưởng
+
+Duy trì mảng `dist[]`, trong đó `dist[u]` = độ dài đường đi ngắn nhất tạm thời từ S đến u (ban đầu ∞, riêng `dist[S] = 0`).
+
+Dùng **hàng đợi ưu tiên (min-heap)** lưu các cặp `(khoảng cách, đỉnh)`. Mỗi bước:
+
+1. Lấy đỉnh `u` có `dist` **nhỏ nhất** còn trong hàng đợi → khoảng cách của `u` lúc này là **chính xác (cố định)**.
+2. Với mỗi đỉnh kề `v` qua cạnh `(u, v, w)`, **nới lỏng (relax)**:
+   - Nếu `dist[u] + w < dist[v]` thì cập nhật `dist[v] = dist[u] + w` và đẩy `(dist[v], v)` vào heap.
+
+Nhờ trọng số không âm, đỉnh được lấy ra với khoảng cách nhỏ nhất sẽ không bao giờ bị cải thiện nữa — đây là lý do thuật toán đúng.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Dùng heap thông thường", "O((V + E) log V)", "Mỗi cạnh đẩy tối đa một lần vào heap"],
+    ["Dùng Fibonacci heap", "O(E + V log V)", "Cập nhật giảm khoá O(1) khấu hao"],
+    ["Không gian", "O(V + E)", "Mảng dist, heap và danh sách kề"],
+    ["So với Bellman-Ford", "O(V·E)", "Dijkstra nhanh hơn nhưng cần trọng số không âm"],
+  ]}
+/>
+
+## Ứng dụng / dạng bài hay gặp
+
+- Tìm đường đi ngắn nhất trong bản đồ / mạng lưới (GPS, định tuyến mạng).
+- Đồ thị có trọng số: cạnh giá, thời gian, chi phí.
+- Kết hợp với **A\***: thêm heuristic để rút gọn vùng tìm kiếm.
+- Biến thể: cần đường đi thực (truy vết bằng mảng `prev[]`), đa nguồn (thêm siêu đỉnh).
+
+<Quiz
+  question="Khi nào một đỉnh u được 'khoá' với khoảng cách chính xác trong Dijkstra?"
+  options={[
+    "Ngay khi đỉnh đó lần đầu được đẩy vào hàng đợi",
+    "Khi đỉnh đó được lấy ra khỏi hàng đợi với khoảng cách nhỏ nhất",
+    "Sau khi duyệt hết tất cả cạnh của nó 2 lần",
+    "Chỉ khi đồ thị là cây",
+  ]}
+  answer={1}
+  correctNote="Đúng — vì trọng số không âm, khoảng cách nhỏ nhất khi lấy ra không thể bị cải thiện thêm."
+  incorrectNote="Chưa đúng — đỉnh chỉ được khoá khi nó được lấy ra khỏi heap với khoảng cách nhỏ nhất hiện có."
+/>

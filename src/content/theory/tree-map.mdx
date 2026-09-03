@@ -1,0 +1,45 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Tree Map (std::map) lưu cặp khóa-giá trị có thứ tự trên cây đỏ-đen — mỗi thao tác luôn保证 O(log n), dù trường hợp xấu nhất.*
+
+## Cấu trúc
+
+Tree Map sử dụng **cây đỏ-đen (Red-Black Tree)**, một cây nhị phân tìm kiếm tự cân bằng:
+
+- Mỗi nút lưu một cặp **(key, value)**.
+- Các key luôn được sắp xếp **tăng dần** theo thứ tự inorder.
+- Cây tự cân bằng qua các phép quay và đổi màu, đảm bảo chiều cao luôn O(log n).
+
+## Thao tác chính
+
+- **insert(key, value)**: Chèn nút theo BST, rồi cân bằng lại. O(log n).
+- **find(key)**: Tìm key trên đường đi từ gốc. O(log n).
+- **erase(key)**: Xóa nút, cân bằng lại. O(log n).
+- **Duyệt**: Traversal inorder cho key theo thứ tự tăng dần. O(n).
+
+## So sánh Tree Map vs Hash Map
+
+<ComplexityTable
+  headers={["Thao tác", "Tree Map (std::map)", "Hash Map (unordered_map)"]}
+  rows={[
+    ["Insert", "O(log n) luôn", "O(1) trung bình"],
+    ["Find", "O(log n) luôn", "O(1) trung bình"],
+    ["Erase", "O(log n) luôn", "O(1) trung bình"],
+    ["Duyệt theo thứ tự", "Có (key tăng dần)", "Không"],
+    ["Worst case", "O(log n)", "O(n) khi tất cả trùng bucket"],
+  ]}
+/>
+
+<Quiz
+  question="Tree Map có ưu điểm gì so với Hash Map?"
+  options={[
+    "Thao tác nhanh hơn trong mọi trường hợp",
+    "Tự động duy trì key theo thứ tự tăng dần",
+    "Không cần dung lượng bộ nhớ额外",
+    "Luôn luôn O(1)",
+  ]}
+  answer={1}
+  correctNote="Đúng — Tree Map duy trì key có thứ tự, phù hợp khi cần duyệt hoặc tìm key gần nhất."
+  incorrectNote="Chưa đúng — Tree Map chậm hơn Hash Map về thời gian trung bình, nhưng có thứ tự."
+/>

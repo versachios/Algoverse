@@ -1,0 +1,51 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Union-Find là "trái tim" của thuật toán Kruskal và nhiều bài toán quản lý nhóm trên đồ thị — chỉ vài dòng mã nhưng cực kỳ mạnh nhờ nén đường đi.*
+
+## Bài toán
+
+Quản lý một tập **rời nhau (disjoint sets)** các phần tử, hỗ trợ hai thao tác nhanh:
+
+- **find(x)**: trả về "đại diện" (gốc cây) của tập chứa x — dùng để kiểm tra hai phần tử có cùng tập không.
+- **union(a, b)**: gộp tập chứa a và tập chứa b làm một.
+
+## Ý tưởng
+
+Biểu diễn mỗi tập bằng một **cây**; gốc cây là đại diện. Mảng `parent[]` lưu cha của mỗi đỉnh (`parent[i] = i` nếu i là gốc). Hai kỹ thuật tối ưu:
+
+- **Nén đường đi (path compression)**: khi tìm gốc của x, ghim thẳng x (và các đỉnh trên đường đi) vào gốc → cây ngày càng dẹt.
+- **Union by size (hoặc rank)**: ghim gốc cây nhỏ hơn vào gốc cây lớn hơn → giữ cây thấp.
+
+Kết hợp cả hai cho độ phức tạp gần như O(1) khấu hao.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["find + path compression", "O(α(n)) ~ O(1)", "α(n): hàm Ackermann ngược, hầu như hằng số"],
+    ["union with size/rank", "O(α(n))", "Ghim cây nhỏ vào cây lớn"],
+    ["Cả hai chiến lược", "~ O(1) khấu hao", "Gần như hằng số trong thực tế"],
+  ]}
+/>
+
+## Ứng dụng
+
+- Thuật toán **Kruskal** (cây khung nhỏ nhất) — gộp dần các cạnh.
+- Kiểm tra khép chu trình trong đồ thị.
+- Phân cụm, quản lý nhóm bạn bè trên mạng xã hội.
+- Bài toán "đô thị kết nối", liên thông động.
+
+<Quiz
+  question="Mục đích của nén đường đi (path compression) trong find(x) là gì?"
+  options={[
+    "Làm cây cao hơn để tìm nhanh hơn",
+    "Ghim trực tiếp các đỉnh trên đường đi vào gốc để cây dẹt hơn",
+    "Đổi tên các đỉnh trong tập",
+    "Tăng giá trị sz của mọi đỉnh",
+  ]}
+  answer={1}
+  correctNote="Đúng — nén đường đi làm các lần find sau nhanh hơn vì cây rất dẹt."
+  incorrectNote="Chưa đúng — nén đường đi ghim đỉnh vào gốc, khiến cây thấp và find gần O(1)."
+/>

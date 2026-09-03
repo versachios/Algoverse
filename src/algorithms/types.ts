@@ -86,7 +86,89 @@ export interface GridStep {
   stats?: Record<string, number>;
 }
 
-export type AlgorithmStep = ArrayStep | TreeStep | GridStep;
+/** Node role for graph-shaped algorithms (Dijkstra, BFS/DFS). */
+export type GraphNodeRole = "idle" | "source" | "frontier" | "current" | "settled";
+
+export interface GraphNodeData {
+  id: string;
+  label: string;
+}
+
+export interface GraphEdgeData {
+  from: string;
+  to: string;
+  weight: number;
+}
+
+/** A single snapshot for graph algorithms. Shares codeLine/explanation/stats with
+ *  the other steps; `highlights` stays [] since StepTrace tick-coloring is index-based. */
+export interface GraphStep {
+  kind: "graph";
+  nodes: Record<string, GraphNodeData>;
+  edges: GraphEdgeData[];
+  /** Shortest distance found so far per node; missing/undefined = chưa thăm (∞). */
+  dist: Record<string, number>;
+  nodeStates: Record<string, GraphNodeRole>;
+  /** Edge currently being relaxed (nới lỏng). */
+  edgeHighlight?: [string, string] | null;
+  /** When false, GraphScene hides the per-node numeric label (used by DSU). */
+  showDist?: boolean;
+  /** When false, GraphScene hides edge weight labels (BFS/DFS, DSU). */
+  showWeights?: boolean;
+  highlights: IndexHighlight[]; // always [] — kept for StepTrace compatibility
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+/** Cell role inside a hash-table bucket chain. */
+export type HashCellRole = "idle" | "current" | "inserted" | "found" | "deleted";
+
+/** A single key (set) or key→value (map) stored in a hash bucket. */
+export interface HashBucketItem {
+  key: number;
+  value?: number;
+}
+
+/** A snapshot for hash-table algorithms (unordered_map / unordered_set).
+ *  `buckets` is the array of bucket chains; cellStates uses `${bucketIdx}:${itemIdx}` keys. */
+export interface HashStep {
+  kind: "hash";
+  numBuckets: number;
+  buckets: HashBucketItem[][];
+  cellStates: Record<string, HashCellRole>;
+  highlights: IndexHighlight[]; // always [] — kept for StepTrace compatibility
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+/** Red-Black tree node: a binary node carrying a key (and optional value for maps). */
+export interface RbtNode {
+  id: string;
+  key: number;
+  value?: number;
+  red: boolean;
+  left: string | null;
+  right: string | null;
+}
+
+/** Node role for balanced-tree algorithms (std::map / std::set = Red-Black tree). */
+export type RbtNodeRole = "idle" | "comparing" | "inserted" | "rotating" | "found" | "removed";
+
+export interface RbtStep {
+  kind: "rbt";
+  nodes: Record<string, RbtNode>;
+  rootId: string | null;
+  nodeStates: Record<string, RbtNodeRole>;
+  edgeHighlight?: [string, string] | null;
+  highlights: IndexHighlight[];
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+export type AlgorithmStep = ArrayStep | TreeStep | GridStep | GraphStep | HashStep | RbtStep;
 
 /** Runtime guards — ArrayStep is the implicit default (no `kind` field) so the
  *  5 existing array algorithms never needed editing when this union was introduced. */
@@ -95,6 +177,20 @@ export function isTreeStep(step: AlgorithmStep): step is TreeStep {
 }
 export function isGridStep(step: AlgorithmStep): step is GridStep {
   return (step as GridStep).kind === "grid";
+}
+export function isGraphStep(step: AlgorithmStep): step is GraphStep {
+  return (step as GraphStep).kind === "graph";
+}
+export function isHashStep(step: AlgorithmStep): step is HashStep {
+  return (step as HashStep).kind === "hash";
+}
+export function isRbtStep(step: AlgorithmStep): step is RbtStep {
+  return (step as RbtStep).kind === "rbt";
+}
+
+/** Small helper for tree/graph steps: non-idle nodes to highlight. */
+export function isSettled(role: GraphNodeRole): boolean {
+  return role === "settled" || role === "source" || role === "current";
 }
 
 export interface AlgorithmMeta {

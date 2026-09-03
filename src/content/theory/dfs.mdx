@@ -1,0 +1,49 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *DFS "rẽ nhánh rồi mới quay lui": đi sâu đến tận cùng một nhánh trước khi quay lại — giống như khám phá mê cung bằng cách luôn đi thẳng rồi vẽ vạch.*
+
+## Bài toán
+
+Cho đồ thị và một đỉnh nguồn **S**. Thăm toàn bộ các đỉnh đến được từ S, ưu tiên càng đi sâu càng tốt trước khi xét các nhánh khác.
+
+## Ý tưởng
+
+DFS có thể viết bằng **đệ quy** (hoặc **ngăn xếp tường minh**):
+
+1. Đánh dấu `u` đã thăm.
+2. Với mỗi đỉnh kề `v` **chưa thăm**, gọi đệ quy DFS(v).
+3. Khi hết đỉnh kề chưa thăm → quay lui.
+
+Thứ tự duyệt tạo ra một **cây DFS**. Ngăn xếp của lời gọi đệ quy lưu "đường đi hiện tại" — đây chính là thứ được tô sáng trong mô phỏng.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(V + E)", "Mỗi đỉnh thăm một lần, mỗi cạnh xét một lần"],
+    ["Không gian", "O(V)", "Ngăn xếp đệ quy trong trường hợp xấu nhất"],
+    ["So với BFS", "—", "DFS không cho đường đi ngắn nhất theo cạnh, nhưng linh hoạt cho đệ quy"],
+  ]}
+/>
+
+## Ứng dụng
+
+- Kiểm tra liên thông, đếm thành phần liên thông.
+- Phát hiện chu trình, bài toán tô màu hai phía (bipartite check).
+- Thành phần liên thông mạnh (Kosaraju / Tarjan), sắp xếp topo, tìm khớp cầu.
+- Sinh hoán vị / tổ hợp (backtracking) — cùng tư duy "đi sâu rồi quay lui".
+
+<Quiz
+  question="Trong DFS, điều gì xảy ra khi một đỉnh không còn đỉnh kề chưa thăm?"
+  options={[
+    "Đỉnh đó được thăm lại từ đầu",
+    "Thuật toán dừng ngay toàn bộ",
+    "Đỉnh đó bị bỏ qua vĩnh viễn",
+    "Thuật toán quay lui về đỉnh gọi nó",
+  ]}
+  answer={3}
+  correctNote="Đúng — khi hết nhánh, DFS quay lui lên đỉnh cha rồi tiếp tục nhánh khác."
+  incorrectNote="Chưa đúng — DFS không lặp lại, mà quay lui về lời gọi trước đó để rẽ nhánh khác."
+/>

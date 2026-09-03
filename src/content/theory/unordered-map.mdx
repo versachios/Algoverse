@@ -1,0 +1,48 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Hash Map (unordered_map) là cấu trúc dữ liệu lưu cặp khóa-giá trị, tra cứu khóa bất kỳ chỉ trong O(1) trung bình nhờ hàm băm.*
+
+## Cấu trúc
+
+Hash Map sử dụng một mảng các **bucket** (xô). Mỗi khóa `key` được chuyển thành chỉ số mảng bằng **hàm băm**:
+
+```
+index = hash(key) % bucket_count
+```
+
+Giá trị được lưu tại vị trí đó. Khi hai khóa cho cùng một chỉ số — gọi là **xung đột (collision)** — ta xử lý bằng **chaining**: mỗi bucket là một danh sách liên kết chứa tất cả cặp khóa-giá trị có cùng chỉ số.
+
+## Thao tác chính
+
+- **insert(key, value)**: Băm key, thêm vào danh sách tại bucket tương ứng. O(1) trung bình.
+- **find(key)**: Băm key, tìm trong danh sách tại bucket. O(1) trung bình.
+- **erase(key)**: Băm key, xóa khỏi danh sách. O(1) trung bình.
+
+Khi số phần tử quá lớn so với số bucket, hiệu suất giảm → tự mở rộng (rehash) gấp đôi số bucket.
+
+## So sánh Hash Map vs Tree Map
+
+<ComplexityTable
+  headers={["Thao tác", "Hash Map (unordered_map)", "Tree Map (std::map)"]}
+  rows={[
+    ["Insert", "O(1) trung bình", "O(log n)"],
+    ["Find", "O(1) trung bình", "O(log n)"],
+    ["Erase", "O(1) trung bình", "O(log n)"],
+    ["Duyệt theo thứ tự", "Không", "Có (key tăng dần)"],
+    ["Worst case", "O(n) khi tất cả trùng bucket", "O(log n)"],
+  ]}
+/>
+
+<Quiz
+  question="Hash Map có ưu điểm gì so với Tree Map?"
+  options={[
+    "Duyệt key theo thứ tự tăng dần",
+    "Thao tác trung bình O(1), nhanh hơn O(log n)",
+    "Luôn luôn O(1) trong mọi trường hợp",
+    "Không cần hàm băm",
+  ]}
+  answer={1}
+  correctNote="Đúng — Hash Map có O(1) trung bình, nhanh hơn O(log n) của Tree Map."
+  incorrectNote="Chưa đúng — Hash Map trung bình O(1) nhờ hàm băm, không liên quan đến thứ tự key."
+/>

@@ -1,0 +1,48 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Hash Set (unordered_set) là phiên bản đơn giản化的 của Hash Map: chỉ lưu khóa, không lưu giá trị — dùng để kiểm tra sự tồn tại trong O(1) trung bình.*
+
+## Cấu trúc
+
+Hash Set hoạt động giống Hash Map nhưng **không có phần giá trị**. Mỗi phần tử chỉ là một khóa duy nhất:
+
+```
+index = hash(key) % bucket_count
+```
+
+Bucket chứa danh sách các khóa có cùng chỉ số (chaining). Vì chỉ lưu khóa nên kiểm tra trùng lặp rất hiệu quả.
+
+## Thao tác chính
+
+- **insert(key)**: Băm key, thêm vào danh sách. O(1) trung bình.
+- **find(key)**: Băm key, kiểm tra danh sách. O(1) trung bình.
+- **erase(key)**: Băm key, xóa khỏi danh sách. O(1) trung bình.
+
+Hash Set **không cho phép phần tử trùng lặp** — nếu insert lại key đã có thì không thay đổi gì.
+
+## So sánh Hash Set vs Tree Set
+
+<ComplexityTable
+  headers={["Thao tác", "Hash Set (unordered_set)", "Tree Set (std::set)"]}
+  rows={[
+    ["Insert", "O(1) trung bình", "O(log n)"],
+    ["Find", "O(1) trung bình", "O(log n)"],
+    ["Erase", "O(1) trung bình", "O(log n)"],
+    ["Duyệt theo thứ tự", "Không", "Có (key tăng dần)"],
+    ["Worst case", "O(n) khi tất cả trùng bucket", "O(log n)"],
+  ]}
+/>
+
+<Quiz
+  question="Khi insert một key đã tồn tại trong Hash Set, điều gì xảy ra?"
+  options={[
+    "Bị báo lỗi hoặc ngoại lệ",
+    "Key bị xóa rồi thêm lại",
+    "Không thay đổi gì — Set luôn chứa khóa duy nhất",
+    "Key mới được thêm đè lên key cũ",
+  ]}
+  answer={2}
+  correctNote="Đúng — Hash Set lưu khóa duy nhất, insert lại key đã có không thay đổi."
+  incorrectNote="Chưa đúng — Set không lưu trữ phần tử trùng lặp, insert lại key cũ là no-op."
+/>

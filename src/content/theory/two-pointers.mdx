@@ -1,0 +1,42 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Two Pointers là kỹ thuật dùng hai con trỏ di chuyển trên mảng đã sắp xếp, tìm cặp phần tử có tổng X chỉ trong O(n).*
+
+## Bài toán
+
+Cho mảng đã sắp xếp tăng dần `a[]` và số nguyên `X`. Tìm hai phần tử `a[i] + a[j] = X` (i ≠ j).
+
+## Ý tưởng
+
+Sử dụng hai con trỏ: `left` ở đầu mảng, `right` ở cuối mảng:
+
+1. Nếu `a[left] + a[right] == X` → tìm thấy.
+2. Nếu tổng nhỏ hơn X → tăng `left` (cần tổng lớn hơn).
+3. Nếu tổng lớn hơn X → giảm `right` (cần tổng nhỏ hơn).
+
+Mỗi bước di chuyển một trong hai con trỏ, tổng số bước không vượt quá n. Vì mảng đã sắp xếp, việc di chuyển đảm bảo không bỏ lỡ nghiệm.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n)", "Mỗi con trỏ di chuyển tối đa n bước"],
+    ["Không gian", "O(1)", "Chỉ dùng hai biến con trỏ"],
+    ["Yêu cầu", "Mảng đã sắp xếp", "Nếu chưa sắp xếp cần sort trước O(n log n)"],
+  ]}
+/>
+
+<Quiz
+  question="Khi tổng a[left] + a[right] nhỏ hơn X, ta cần làm gì?"
+  options={[
+    "Giảm right để tổng nhỏ hơn nữa",
+    "Tăng left để tổng lớn hơn",
+    "Kết thúc thuật toán — không có nghiệm",
+    "Tăng cả hai con trỏ",
+  ]}
+  answer={1}
+  correctNote="Đúng — tổng nhỏ hơn X nghĩa là cần phần tử lớn hơn, nên tăng left."
+  incorrectNote="Chưa đúng — tăng left sẽ lấy phần tử lớn hơn, giúp tổng tiến đến X."
+/>
