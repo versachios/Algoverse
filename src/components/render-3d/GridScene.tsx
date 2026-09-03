@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import type { GridCellRole, GridStep } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<GridCellRole, string> = {
@@ -38,9 +39,9 @@ function Cell({
           metalness={0.15}
         />
       </mesh>
-      <Text position={[0, height + 0.28, 0]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, height + 0.28, 0]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
         {String(value)}
-      </Text>
+      </Text3D>
     </group>
   );
 }

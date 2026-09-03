@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrthographicCamera, Text } from "@react-three/drei";
+import { OrthographicCamera } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import type { HashCellRole, HashStep } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<HashCellRole, string> = {
@@ -27,9 +28,9 @@ export function HashTableScene({ step }: { step: HashStep }) {
       <OrthographicCamera makeDefault position={[0, 3, 6]} zoom={numBuckets > 6 ? 30 : 55} near={0.1} far={50} />
 
       {Array.from({ length: numBuckets }, (_, b) => (
-        <Text key={`lbl-${b}`} position={[slotX(b), 1.1, 0.1]} fontSize={0.2} color="#8f897d" anchorX="center" anchorY="middle">
+        <Text3D key={`lbl-${b}`} position={[slotX(b), 1.1, 0.1]} fontSize={0.2} color="#8f897d" anchorX="center" anchorY="middle">
           {b}
-        </Text>
+        </Text3D>
       ))}
 
       {buckets.map((chain, b) => (
@@ -55,9 +56,9 @@ export function HashTableScene({ step }: { step: HashStep }) {
                     opacity={role === "deleted" ? 0.3 : 1}
                   />
                 </mesh>
-                <Text position={[0, 0, 0.22]} fontSize={0.24} color="#ece7dc" anchorX="center" anchorY="middle">
+                <Text3D position={[0, 0, 0.22]} fontSize={0.24} color="#ece7dc" anchorX="center" anchorY="middle">
                   {`${item.key}${item.value !== undefined ? `: ${item.value}` : ""}`}
-                </Text>
+                </Text3D>
               </group>
             );
           })}

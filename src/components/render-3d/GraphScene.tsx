@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Line, OrbitControls, Text } from "@react-three/drei";
+import { Line, OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import type { GraphNodeRole, GraphStep } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<GraphNodeRole, string> = {
@@ -55,11 +56,11 @@ function NodeSphere({
           metalness={0.15}
         />
       </mesh>
-      <Text position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
         {label}
-      </Text>
+      </Text3D>
       {showDist && (
-        <Text
+        <Text3D
           position={[0, -0.55, 0.2]}
           fontSize={0.2}
           color={role === "idle" ? "#8f897d" : "#ece7dc"}
@@ -67,7 +68,7 @@ function NodeSphere({
           anchorY="middle"
         >
           {distText}
-        </Text>
+        </Text3D>
       )}
     </group>
   );
@@ -114,7 +115,7 @@ export function GraphScene({ step, interactive = true }: { step: GraphStep; inte
               lineWidth={active ? 3 : 1.5}
             />
             {showWeights && (
-              <Text
+              <Text3D
                 position={[mid.x, mid.y, 0.3]}
                 fontSize={0.2}
                 color={active ? "#ece7dc" : "#8f897d"}
@@ -122,7 +123,7 @@ export function GraphScene({ step, interactive = true }: { step: GraphStep; inte
                 anchorY="middle"
               >
                 {String(e.weight)}
-              </Text>
+              </Text3D>
             )}
           </group>
         );

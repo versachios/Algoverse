@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, OrthographicCamera, Text } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import type { ArrayStep, IndexRole } from "@/algorithms/types";
+import { Text3D } from "@/components/render-3d/Text3D";
 
 const ROLE_COLOR: Record<IndexRole, string> = {
   default: "#211e1a",
@@ -46,13 +47,13 @@ function Cell({
           opacity={ROLE_OPACITY[role]}
         />
       </mesh>
-      <Text position={[0, 0, 0.27]} fontSize={0.28} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.27]} fontSize={0.28} color="#ece7dc" anchorX="center" anchorY="middle">
         {String(value)}
-      </Text>
+      </Text3D>
       {label && (
-        <Text position={[0, 0.75, 0]} fontSize={0.24} color="#d97a4d" anchorX="center" anchorY="middle">
+        <Text3D position={[0, 0.75, 0]} fontSize={0.24} color="#d97a4d" anchorX="center" anchorY="middle">
           {label}
-        </Text>
+        </Text3D>
       )}
     </group>
   );
@@ -96,3 +97,5 @@ export function ArrayRow2D({ step, interactive = true }: { step: ArrayStep; inte
     </Canvas>
   );
 }
+
+

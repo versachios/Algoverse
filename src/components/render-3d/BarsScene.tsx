@@ -2,7 +2,8 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import * as THREE from "three";
 import type { ArrayStep, IndexRole } from "@/algorithms/types";
 
@@ -49,7 +50,7 @@ function Bar({
         <boxGeometry args={[0.7, 1, 0.7]} />
         <meshStandardMaterial color={ROLE_COLOR.default} roughness={0.35} metalness={0.15} />
       </mesh>
-      <Text
+      <Text3D
         position={[0, -0.35, 0]}
         fontSize={0.28}
         color="#8f897d"
@@ -57,9 +58,9 @@ function Bar({
         anchorY="middle"
       >
         {String(value)}
-      </Text>
+      </Text3D>
       {label && (
-        <Text
+        <Text3D
           position={[0, -0.7, 0]}
           fontSize={0.24}
           color="#d97a4d"
@@ -67,7 +68,7 @@ function Bar({
           anchorY="middle"
         >
           {label}
-        </Text>
+        </Text3D>
       )}
     </group>
   );

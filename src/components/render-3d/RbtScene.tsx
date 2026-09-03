@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Line, OrbitControls, Text } from "@react-three/drei";
+import { Line, OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import type { RbtNodeRole, RbtStep } from "@/algorithms/types";
 
 const ROLE_EMISSIVE: Record<RbtNodeRole, number> = {
@@ -39,7 +40,6 @@ function layoutTree(nodes: Record<string, import("@/algorithms/types").RbtNode>,
 
 function NodeSphere({ node, role, x, y }: { node: import("@/algorithms/types").RbtNode; role: RbtNodeRole; x: number; y: number }) {
   const color = node.red ? "#c0553f" : "#23201c";
-  const active = role !== "idle";
   const label = node.value !== undefined ? `${node.key}:${node.value}` : String(node.key);
   return (
     <group position={[x, y, 0]}>
@@ -53,12 +53,12 @@ function NodeSphere({ node, role, x, y }: { node: import("@/algorithms/types").R
           metalness={0.2}
         />
       </mesh>
-      <Text position={[0, 0, 0.4]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
         {label}
-      </Text>
-      <Text position={[0, -0.5, 0.2]} fontSize={0.16} color="#8f897d" anchorX="center" anchorY="middle">
+      </Text3D>
+      <Text3D position={[0, -0.5, 0.2]} fontSize={0.16} color="#8f897d" anchorX="center" anchorY="middle">
         {node.red ? "R" : "B"}
-      </Text>
+      </Text3D>
     </group>
   );
 }

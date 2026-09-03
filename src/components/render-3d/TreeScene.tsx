@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Line, OrbitControls, Text } from "@react-three/drei";
+import { Line, OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import type { TreeNodeData, TreeNodeRole, TreeStep } from "@/algorithms/types";
 
 const ROLE_COLOR: Record<TreeNodeRole, string> = {
@@ -52,9 +53,9 @@ function NodeSphere({ node, role, x, y }: { node: TreeNodeData; role: TreeNodeRo
           metalness={0.15}
         />
       </mesh>
-      <Text position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#0d0c0a" anchorX="center" anchorY="middle">
         {String(node.value)}
-      </Text>
+      </Text3D>
     </group>
   );
 }

@@ -3,7 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Billboard, Line, OrbitControls, Text } from "@react-three/drei";
+import { Billboard, Line, OrbitControls } from "@react-three/drei";
+import { Text3D } from "@/components/render-3d/Text3D";
 import * as THREE from "three";
 import { catalogue, groups } from "@/algorithms/catalogue";
 
@@ -57,7 +58,7 @@ function Sun() {
       </mesh>
       <pointLight position={[0, 0, 0]} intensity={1.4} color="#d97a4d" distance={14} />
       <Billboard position={[0, 0.95, 0]}>
-        <Text
+        <Text3D
           fontSize={0.26}
           color={hovered ? "#ffd9b0" : "#ece7dc"}
           anchorX="center"
@@ -66,11 +67,11 @@ function Sun() {
           outlineColor="#0d0c0a"
         >
           ALGOVERSE
-        </Text>
+        </Text3D>
       </Billboard>
       {hovered && (
         <Billboard position={[0, 0.65, 0]}>
-          <Text
+          <Text3D
             fontSize={0.14}
             color="#8f897d"
             anchorX="center"
@@ -79,7 +80,7 @@ function Sun() {
             outlineColor="#0d0c0a"
           >
             mở repo trên GitHub
-          </Text>
+          </Text3D>
         </Billboard>
       )}
     </group>
@@ -150,7 +151,7 @@ function Planet({
       </mesh>
       {hovered && (
         <Billboard position={[0, 0.34, 0]}>
-          <Text
+          <Text3D
             fontSize={0.19}
             color={planet.ready ? "#ece7dc" : "#8f897d"}
             anchorX="center"
@@ -159,7 +160,7 @@ function Planet({
             outlineColor="#0d0c0a"
           >
             {planet.name}
-          </Text>
+          </Text3D>
         </Billboard>
       )}
     </group>
