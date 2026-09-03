@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { usePlaybackStore } from "@/store/playback-store";
-import { BarsScene } from "@/components/render-3d/BarsScene";
-import { TreeScene } from "@/components/render-3d/TreeScene";
-import { GridScene } from "@/components/render-3d/GridScene";
-import { GraphScene } from "@/components/render-3d/GraphScene";
-import { HashTableScene } from "@/components/render-3d/HashTableScene";
-import { RbtScene } from "@/components/render-3d/RbtScene";
-import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
+
+// Each scene pulls in three.js + @react-three/fiber (~1MB combined). Loading
+// all 7 statically meant every algorithm page — even a simple sort — shipped
+// every render mode's JS up front, delaying first paint. Dynamic-importing
+// with ssr:false means a page only ever fetches the ONE scene it actually
+// uses, as a separate chunk, after the surrounding page shell (title, theory
+// text, code panel) has already painted.
+const SCENE_LOADING = <div className="h-full w-full animate-pulse bg-[var(--color-hairline)]/20" />;
+const BarsScene = dynamic(() => import("@/components/render-3d/BarsScene").then((m) => m.BarsScene), { ssr: false, loading: () => SCENE_LOADING });
+const TreeScene = dynamic(() => import("@/components/render-3d/TreeScene").then((m) => m.TreeScene), { ssr: false, loading: () => SCENE_LOADING });
+const GridScene = dynamic(() => import("@/components/render-3d/GridScene").then((m) => m.GridScene), { ssr: false, loading: () => SCENE_LOADING });
+const GraphScene = dynamic(() => import("@/components/render-3d/GraphScene").then((m) => m.GraphScene), { ssr: false, loading: () => SCENE_LOADING });
+const HashTableScene = dynamic(() => import("@/components/render-3d/HashTableScene").then((m) => m.HashTableScene), { ssr: false, loading: () => SCENE_LOADING });
+const RbtScene = dynamic(() => import("@/components/render-3d/RbtScene").then((m) => m.RbtScene), { ssr: false, loading: () => SCENE_LOADING });
+const ArrayRow2D = dynamic(() => import("@/components/render-2d/ArrayRow2D").then((m) => m.ArrayRow2D), { ssr: false, loading: () => SCENE_LOADING });
 import { CodePanel } from "@/components/CodePanel";
 import { StepTrace } from "@/components/StepTrace";
 import { getAlgorithm } from "@/algorithms";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { TopicGraph3D } from "@/components/TopicGraph3D";
+import { TopicGraph3DLazy as TopicGraph3D } from "@/components/TopicGraph3DLazy";
 import { TopicBrowser } from "@/components/TopicBrowser";
 import { Footer } from "@/components/Footer";
 

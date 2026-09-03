@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { BarsScene } from "@/components/render-3d/BarsScene";
-import { ArrayRow2D } from "@/components/render-2d/ArrayRow2D";
-import { TreeScene } from "@/components/render-3d/TreeScene";
-import { GridScene } from "@/components/render-3d/GridScene";
-import { GraphScene } from "@/components/render-3d/GraphScene";
-import { HashTableScene } from "@/components/render-3d/HashTableScene";
-import { RbtScene } from "@/components/render-3d/RbtScene";
+import dynamic from "next/dynamic";
 import { getAlgorithm } from "@/algorithms";
+
+// Dynamic + ssr:false: each scene becomes its own chunk fetched only once a
+// card of that kind actually mounts, instead of one ~1MB three.js bundle
+// blocking the whole "Chủ đề" section (and every other page) from painting.
+const BarsScene = dynamic(() => import("@/components/render-3d/BarsScene").then((m) => m.BarsScene), { ssr: false });
+const ArrayRow2D = dynamic(() => import("@/components/render-2d/ArrayRow2D").then((m) => m.ArrayRow2D), { ssr: false });
+const TreeScene = dynamic(() => import("@/components/render-3d/TreeScene").then((m) => m.TreeScene), { ssr: false });
+const GridScene = dynamic(() => import("@/components/render-3d/GridScene").then((m) => m.GridScene), { ssr: false });
+const GraphScene = dynamic(() => import("@/components/render-3d/GraphScene").then((m) => m.GraphScene), { ssr: false });
+const HashTableScene = dynamic(() => import("@/components/render-3d/HashTableScene").then((m) => m.HashTableScene), { ssr: false });
+const RbtScene = dynamic(() => import("@/components/render-3d/RbtScene").then((m) => m.RbtScene), { ssr: false });
 import {
   isGridStep,
   isGraphStep,
