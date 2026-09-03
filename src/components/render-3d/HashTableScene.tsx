@@ -14,7 +14,7 @@ const ROLE_COLOR: Record<HashCellRole, string> = {
   deleted: "#151311",
 };
 
-export function HashTableScene({ step }: { step: HashStep }) {
+export function HashTableScene({ step, compact = false }: { step: HashStep; compact?: boolean }) {
   const { numBuckets, buckets, cellStates } = step;
 
   const maxChain = useMemo(() => Math.max(1, ...buckets.map((b) => b.length)), [buckets]);
@@ -35,7 +35,7 @@ export function HashTableScene({ step }: { step: HashStep }) {
       />
 
       {Array.from({ length: numBuckets }, (_, b) => (
-        <Text3D key={`lbl-${b}`} position={[slotX(b), 1.1, 0.1]} fontSize={0.2} color="#8f897d" anchorX="center" anchorY="middle">
+        <Text3D key={`lbl-${b}`} position={[slotX(b), 1.1, 0.1]} fontSize={0.2} color="#8f897d" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
           {b}
         </Text3D>
       ))}
@@ -63,7 +63,7 @@ export function HashTableScene({ step }: { step: HashStep }) {
                     opacity={role === "deleted" ? 0.3 : 1}
                   />
                 </mesh>
-                <Text3D position={[0, 0, 0.22]} fontSize={0.24} color="#ece7dc" anchorX="center" anchorY="middle">
+                <Text3D position={[0, 0, 0.22]} fontSize={0.24} color="#ece7dc" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
                   {`${item.key}${item.value !== undefined ? `: ${item.value}` : ""}`}
                 </Text3D>
               </group>

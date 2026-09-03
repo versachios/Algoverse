@@ -38,7 +38,7 @@ function layoutTree(nodes: Record<string, import("@/algorithms/types").RbtNode>,
   return pos;
 }
 
-function NodeSphere({ node, role, x, y }: { node: import("@/algorithms/types").RbtNode; role: RbtNodeRole; x: number; y: number }) {
+function NodeSphere({ node, role, x, y, compact }: { node: import("@/algorithms/types").RbtNode; role: RbtNodeRole; x: number; y: number; compact?: boolean }) {
   const color = node.red ? "#c0553f" : "#23201c";
   const label = node.value !== undefined ? `${node.key}:${node.value}` : String(node.key);
   return (
@@ -53,10 +53,10 @@ function NodeSphere({ node, role, x, y }: { node: import("@/algorithms/types").R
           metalness={0.2}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.4]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {label}
       </Text3D>
-      <Text3D position={[0, -0.5, 0.2]} fontSize={0.16} color="#8f897d" anchorX="center" anchorY="middle">
+      <Text3D position={[0, -0.5, 0.2]} fontSize={0.16} color="#8f897d" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {node.red ? "R" : "B"}
       </Text3D>
     </group>
@@ -67,7 +67,7 @@ function Floor() {
   return <gridHelper args={[20, 20, "#2b2723", "#211e1a"]} position={[0, -3, 0]} />;
 }
 
-export function RbtScene({ step, interactive = true }: { step: RbtStep; interactive?: boolean }) {
+export function RbtScene({ step, interactive = true, compact = false }: { step: RbtStep; interactive?: boolean; compact?: boolean }) {
   const { nodes, rootId, nodeStates, edgeHighlight } = step;
   const pos = useMemo(() => layoutTree(nodes, rootId), [nodes, rootId]);
 
@@ -100,7 +100,7 @@ export function RbtScene({ step, interactive = true }: { step: RbtStep; interact
       {Object.values(nodes).map((node) => {
         const p = pos[node.id];
         if (!p) return null;
-        return <NodeSphere key={node.id} node={node} role={nodeStates[node.id] ?? "idle"} x={p.x} y={p.y} />;
+        return <NodeSphere key={node.id} node={node} role={nodeStates[node.id] ?? "idle"} x={p.x} y={p.y} compact={compact} />;
       })}
       <OrbitControls
         enabled={interactive}

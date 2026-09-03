@@ -36,12 +36,14 @@ function NodeSphere({
   dist,
   showDist,
   pos,
+  compact,
 }: {
   label: string;
   role: GraphNodeRole;
   dist?: number;
   showDist: boolean;
   pos: { x: number; y: number };
+  compact?: boolean;
 }) {
   const distText = dist === undefined ? "∞" : String(dist);
   return (
@@ -56,7 +58,7 @@ function NodeSphere({
           metalness={0.15}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {label}
       </Text3D>
       {showDist && (
@@ -66,6 +68,7 @@ function NodeSphere({
           color={role === "idle" ? "#8f897d" : "#ece7dc"}
           anchorX="center"
           anchorY="middle"
+          pixelScale={compact ? 0.45 : 1}
         >
           {distText}
         </Text3D>
@@ -74,7 +77,7 @@ function NodeSphere({
   );
 }
 
-export function GraphScene({ step, interactive = true }: { step: GraphStep; interactive?: boolean }) {
+export function GraphScene({ step, interactive = true, compact = false }: { step: GraphStep; interactive?: boolean; compact?: boolean }) {
   const { nodes, edges, dist, nodeStates, edgeHighlight } = step;
   const showDist = step.showDist !== false;
   const showWeights = step.showWeights !== false;
@@ -121,6 +124,7 @@ export function GraphScene({ step, interactive = true }: { step: GraphStep; inte
                 color={active ? "#ece7dc" : "#8f897d"}
                 anchorX="center"
                 anchorY="middle"
+                pixelScale={compact ? 0.45 : 1}
               >
                 {String(e.weight)}
               </Text3D>
@@ -141,6 +145,7 @@ export function GraphScene({ step, interactive = true }: { step: GraphStep; inte
             dist={dist[node.id]}
             showDist={showDist}
             pos={p}
+            compact={compact}
           />
         );
       })}

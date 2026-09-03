@@ -104,19 +104,19 @@ export function MiniPreview({ slug }: { slug: string }) {
   return (
     <div ref={ref} className="h-24 pointer-events-none -mx-1">
       {!inView || !step ? null : isTreeStep(step) ? (
-        <TreeScene step={step} interactive={false} />
+        <TreeScene step={step} interactive={false} compact />
       ) : isRbtStep(step) ? (
-        <RbtScene step={step} interactive={false} />
+        <RbtScene step={step} interactive={false} compact />
       ) : isHashStep(step) ? (
-        <HashTableScene step={step} />
+        <HashTableScene step={step} compact />
       ) : isGridStep(step) ? (
-        <GridScene step={step} interactive={false} />
+        <GridScene step={step} interactive={false} compact />
       ) : isGraphStep(step) ? (
-        <GraphScene step={step} interactive={false} />
+        <GraphScene step={step} interactive={false} compact />
       ) : algorithm.meta.renderMode === "3d" ? (
-        <BarsScene step={step} interactive={false} />
+        <BarsScene step={step} interactive={false} compact />
       ) : (
-        <ArrayRow2D step={step} interactive={false} />
+        <ArrayRow2D step={step} interactive={false} compact />
       )}
     </div>
   );

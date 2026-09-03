@@ -29,11 +29,13 @@ function Cell({
   x,
   role,
   label,
+  compact,
 }: {
   value: number;
   x: number;
   role: IndexRole;
   label?: string;
+  compact?: boolean;
 }) {
   return (
     <group position={[x, 0, 0]}>
@@ -47,11 +49,11 @@ function Cell({
           opacity={ROLE_OPACITY[role]}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.27]} fontSize={0.28} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.27]} fontSize={0.28} color="#ece7dc" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {String(value)}
       </Text3D>
       {label && (
-        <Text3D position={[0, 0.75, 0]} fontSize={0.24} color="#d97a4d" anchorX="center" anchorY="middle">
+        <Text3D position={[0, 0.75, 0]} fontSize={0.24} color="#d97a4d" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
           {label}
         </Text3D>
       )}
@@ -59,7 +61,7 @@ function Cell({
   );
 }
 
-export function ArrayRow2D({ step, interactive = true }: { step: ArrayStep; interactive?: boolean }) {
+export function ArrayRow2D({ step, interactive = true, compact = false }: { step: ArrayStep; interactive?: boolean; compact?: boolean }) {
   const { array, highlights } = step;
   const spacing = 1.0;
   const offset = ((array.length - 1) * spacing) / 2;
@@ -84,6 +86,7 @@ export function ArrayRow2D({ step, interactive = true }: { step: ArrayStep; inte
           x={i * spacing - offset}
           role={roleByIndex.get(i)?.role ?? "default"}
           label={roleByIndex.get(i)?.label}
+          compact={compact}
         />
       ))}
       <OrbitControls

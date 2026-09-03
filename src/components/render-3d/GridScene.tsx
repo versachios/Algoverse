@@ -19,12 +19,14 @@ function Cell({
   x,
   z,
   role,
+  compact,
 }: {
   value: number;
   max: number;
   x: number;
   z: number;
   role: GridCellRole;
+  compact?: boolean;
 }) {
   const height = Math.max(0.12, (value / max) * 2.4);
   return (
@@ -39,7 +41,7 @@ function Cell({
           metalness={0.15}
         />
       </mesh>
-      <Text3D position={[0, height + 0.28, 0]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle">
+      <Text3D position={[0, height + 0.28, 0]} fontSize={0.22} color="#ece7dc" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {String(value)}
       </Text3D>
     </group>
@@ -50,7 +52,7 @@ function Floor() {
   return <gridHelper args={[20, 20, "#2b2723", "#211e1a"]} position={[0, 0, 0]} />;
 }
 
-export function GridScene({ step, interactive = true }: { step: GridStep; interactive?: boolean }) {
+export function GridScene({ step, interactive = true, compact = false }: { step: GridStep; interactive?: boolean; compact?: boolean }) {
   const { grid, cellStates } = step;
   const rows = grid.length;
   const cols = grid[0]?.length ?? 0;
@@ -85,6 +87,7 @@ export function GridScene({ step, interactive = true }: { step: GridStep; intera
           x={cell.col * spacing - offsetX}
           z={cell.row * spacing - offsetZ}
           role={cell.role}
+          compact={compact}
         />
       ))}
       <OrbitControls

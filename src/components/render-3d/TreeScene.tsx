@@ -39,7 +39,7 @@ function layoutTree(nodes: Record<string, TreeNodeData>, rootId: string | null) 
   return pos;
 }
 
-function NodeSphere({ node, role, x, y }: { node: TreeNodeData; role: TreeNodeRole; x: number; y: number }) {
+function NodeSphere({ node, role, x, y, compact }: { node: TreeNodeData; role: TreeNodeRole; x: number; y: number; compact?: boolean }) {
   const active = role !== "idle";
   return (
     <group position={[x, y, 0]}>
@@ -53,7 +53,7 @@ function NodeSphere({ node, role, x, y }: { node: TreeNodeData; role: TreeNodeRo
           metalness={0.15}
         />
       </mesh>
-      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle">
+      <Text3D position={[0, 0, 0.4]} fontSize={0.26} color="#ece7dc" outlineColor="#0d0c0a" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
         {String(node.value)}
       </Text3D>
     </group>
@@ -64,7 +64,7 @@ function Floor() {
   return <gridHelper args={[20, 20, "#2b2723", "#211e1a"]} position={[0, -3, 0]} />;
 }
 
-export function TreeScene({ step, interactive = true }: { step: TreeStep; interactive?: boolean }) {
+export function TreeScene({ step, interactive = true, compact = false }: { step: TreeStep; interactive?: boolean; compact?: boolean }) {
   const { nodes, rootId, nodeStates, edgeHighlight } = step;
   const pos = useMemo(() => layoutTree(nodes, rootId), [nodes, rootId]);
 
@@ -97,7 +97,7 @@ export function TreeScene({ step, interactive = true }: { step: TreeStep; intera
       {Object.values(nodes).map((node) => {
         const p = pos[node.id];
         if (!p) return null;
-        return <NodeSphere key={node.id} node={node} role={nodeStates[node.id] ?? "idle"} x={p.x} y={p.y} />;
+        return <NodeSphere key={node.id} node={node} role={nodeStates[node.id] ?? "idle"} x={p.x} y={p.y} compact={compact} />;
       })}
       <OrbitControls
         enabled={interactive}

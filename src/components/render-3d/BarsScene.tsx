@@ -22,12 +22,14 @@ function Bar({
   x,
   role,
   label,
+  compact,
 }: {
   value: number;
   max: number;
   x: number;
   role: IndexRole;
   label?: string;
+  compact?: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const targetHeight = Math.max(0.15, (value / max) * 3.4);
@@ -56,6 +58,7 @@ function Bar({
         color="#8f897d"
         anchorX="center"
         anchorY="middle"
+        pixelScale={compact ? 0.45 : 1}
       >
         {String(value)}
       </Text3D>
@@ -66,6 +69,7 @@ function Bar({
           color="#d97a4d"
           anchorX="center"
           anchorY="middle"
+          pixelScale={compact ? 0.45 : 1}
         >
           {label}
         </Text3D>
@@ -80,7 +84,7 @@ function Floor() {
   );
 }
 
-export function BarsScene({ step, interactive = true }: { step: ArrayStep; interactive?: boolean }) {
+export function BarsScene({ step, interactive = true, compact = false }: { step: ArrayStep; interactive?: boolean; compact?: boolean }) {
   const { array, highlights } = step;
   const max = Math.max(...array, 1);
   const spacing = 1.0;
@@ -111,6 +115,7 @@ export function BarsScene({ step, interactive = true }: { step: ArrayStep; inter
           x={i * spacing - offset}
           role={roleByIndex.get(i)?.role ?? "default"}
           label={roleByIndex.get(i)?.label}
+          compact={compact}
         />
       ))}
       <OrbitControls
