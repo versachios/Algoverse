@@ -108,7 +108,7 @@ export function MiniPreview({ slug }: { slug: string }) {
       ) : isRbtStep(step) ? (
         <RbtScene step={step} interactive={false} compact />
       ) : isHashStep(step) ? (
-        <HashTableScene step={step} compact />
+        <HashTableScene step={step} interactive={false} compact />
       ) : isGridStep(step) ? (
         <GridScene step={step} interactive={false} compact />
       ) : isGraphStep(step) ? (
