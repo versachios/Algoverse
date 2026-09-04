@@ -21,6 +21,12 @@ function toVec(position?: [number, number, number] | number[]) {
   return [p[0] ?? 0, p[1] ?? 0, p[2] ?? 0] as [number, number, number];
 }
 
+// ctx.font (canvas 2D) is not CSS: it can't resolve var(--font-mono, ...),
+// so that has to be spelled out as a real font stack (matches --font-mono in
+// globals.css). Using the CSS var string here silently fails to a tiny
+// system default font — which is why labels looked like blank specks.
+const FONT_STACK = '"IBM Plex Mono", ui-monospace, "Cascadia Code", monospace';
+
 // Fixed working resolution for the offscreen canvas the glyph is rasterized
 // at; the sprite is then scaled down to the caller's world-unit fontSize, so
 // this only affects crispness, never on-screen size.
@@ -31,7 +37,7 @@ function buildTextTexture(text: string, color: string, outlineColor?: string, ou
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
-  const font = `600 ${RASTER_PX}px var(--font-mono, ui-monospace, "SFMono-Regular", monospace)`;
+  const font = `600 ${RASTER_PX}px ${FONT_STACK}`;
   ctx.font = font;
   const measured = ctx.measureText(text || " ");
   const padX = RASTER_PX * 0.32;
