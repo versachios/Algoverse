@@ -1,5 +1,32 @@
 import type { Metadata } from "next";
+import { Manrope, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+// Self-hosted via next/font instead of a runtime <link> to
+// fonts.googleapis.com — the old approach depended on that CDN being
+// reachable on every visit, which is flaky on some VN networks / with
+// ad-block or privacy extensions, and silently falls back to a system font
+// that's missing Vietnamese diacritic glyphs (hence "ể" rendering as "ế").
+// next/font downloads and bundles the font files at build time instead.
+const manrope = Manrope({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+const newsreader = Newsreader({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-newsreader",
+  display: "swap",
+});
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Algoverse — Học thuật toán bằng trực quan hoá",
@@ -9,19 +36,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="vi" className="h-full antialiased">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,wght@0,400;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="vi"
+      className={`h-full antialiased ${manrope.variable} ${newsreader.variable} ${plexMono.variable}`}
+    >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

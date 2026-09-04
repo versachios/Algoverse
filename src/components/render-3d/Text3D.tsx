@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 interface Text3DProps {
@@ -30,9 +31,15 @@ const FONT_STACK = '"IBM Plex Mono", ui-monospace, "Cascadia Code", monospace';
 // Fixed working resolution for the offscreen canvas the glyph is rasterized
 // at; the sprite is then scaled down to the caller's world-unit fontSize, so
 // this only affects crispness, never on-screen size.
-const RASTER_PX = 128;
+const RASTER_PX = 192;
 
-function buildTextTexture(text: string, color: string, outlineColor?: string, outlineFrac = 0.14) {
+function buildTextTexture(
+  text: string,
+  color: string,
+  outlineColor: string | undefined,
+  outlineFrac: number,
+  maxAnisotropy: number,
+) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
@@ -74,6 +81,13 @@ function buildTextTexture(text: string, color: string, outlineColor?: string, ou
   texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.magFilter = THREE.LinearFilter;
   texture.generateMipmaps = true;
+  // Thin multi-char strings (e.g. "-3") sit on cube faces viewed at an
+  // angle, so at minification the GPU samples them non-uniformly across x/y
+  // — without anisotropic filtering that collapses the minus sign + digit
+  // into an unreadable blur even with mipmaps on, while bold single digits
+  // (which have more area to survive the same blur) look fine. Anisotropy
+  // keeps the sharper axis sharp instead of blurring both axes equally.
+  texture.anisotropy = maxAnisotropy;
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return { texture, aspect: canvas.width / canvas.height };
@@ -105,15 +119,16 @@ function buildTextTexture(text: string, color: string, outlineColor?: string, ou
  * position), so anchorX/anchorY are accepted for API compatibility but not
  * otherwise used.
  *
- * `pixelScale` is also accepted-but-unused: it was needed by the <Html>
- * version to shrink a fixed CSS-pixel size back down for tiny MiniPreview
- * canvases. A sprite is sized in world units, which already scales down
- * naturally with a smaller canvas/camera — the original troika-based scenes
- * (see 6846105) never had a compact multiplier and matched the same
- * fontSize in both contexts, which is the look this restores.
+ * `pixelScale` scales the sprite's on-screen size inversely (values < 1
+ * make it BIGGER). MiniPreview canvases are ~96px tall vs. ~420px+ for the
+ * full workbench — same world-unit fontSize means the compact version gets
+ * roughly a quarter of the physical pixels to draw the same glyph into, and
+ * anisotropic filtering / mipmaps can't conjure resolution that was never
+ * there. Call sites already passed `pixelScale={compact ? 0.45 : 1}`
+ * expecting this compensation; it just wasn't wired up here.
  */
 export function Text3D(props: Text3DProps) {
-  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, children } = props;
+  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, pixelScale = 1, children } = props;
 
   const text = typeof children === "string" || typeof children === "number" ? String(children) : "";
   const colorStr = typeof color === "number" ? `#${color.toString(16).padStart(6, "0")}` : color;
@@ -127,9 +142,10 @@ export function Text3D(props: Text3DProps) {
   // translate that into a fraction of our raster canvas the same way.
   const outlineFrac = outlineWidth !== undefined ? (outlineWidth / fontSize) * 1.0 : 0.14;
 
+  const maxAnisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
   const built = useMemo(
-    () => buildTextTexture(text, colorStr, outlineStr, outlineFrac),
-    [text, colorStr, outlineStr, outlineFrac],
+    () => buildTextTexture(text, colorStr, outlineStr, outlineFrac, maxAnisotropy),
+    [text, colorStr, outlineStr, outlineFrac, maxAnisotropy],
   );
 
   // Dispose the *previous* texture only once React has committed the new one
@@ -151,7 +167,7 @@ export function Text3D(props: Text3DProps) {
   if (!built) return null;
 
   const pos = toVec(position);
-  const height = fontSize;
+  const height = fontSize / pixelScale;
   const width = height * built.aspect;
 
   return (

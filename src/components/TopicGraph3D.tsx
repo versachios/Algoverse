@@ -194,9 +194,30 @@ function Scene() {
 }
 
 export function TopicGraph3D() {
+  // TopicGraph3D is the first WebGL context created on the homepage, which
+  // makes it the browser's "oldest" context — so once the catalogue cards
+  // below (each with their own Canvas, see MiniPreview.tsx) push the total
+  // past the browser's concurrent-context limit, THIS is the one that gets
+  // silently force-killed, leaving a blank white canvas with no error.
+  // `key` forces a full Canvas remount (fresh WebGL context) whenever that
+  // happens, instead of leaving the dead canvas on screen.
+  const [key, setKey] = useState(0);
+
   return (
     <div className="relative h-full w-full">
-      <Canvas camera={{ position: [0, 5, 12], fov: 42 }} dpr={[1, 1.5]}>
+      <Canvas
+        key={key}
+        camera={{ position: [0, 5, 12], fov: 42 }}
+        dpr={[1, 1.5]}
+        onCreated={({ gl }) => {
+          const canvas = gl.domElement;
+          const handleLost = (e: Event) => {
+            e.preventDefault();
+            setKey((k) => k + 1);
+          };
+          canvas.addEventListener("webglcontextlost", handleLost, { once: true });
+        }}
+      >
         <Scene />
       </Canvas>
       <div className="pointer-events-none absolute bottom-3 left-3 font-mono-tech text-[11px] text-[var(--color-muted)] uppercase tracking-widest">

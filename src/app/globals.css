@@ -15,10 +15,10 @@
   --color-signal-rose-dim: #a54a3a26;
   --color-signal-gold: #c9b892; /* tertiary: soft khaki, for "settled/done" states */
 
-  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Newsreader", Georgia, serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Code", monospace;
 }
 
 body {

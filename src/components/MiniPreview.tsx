@@ -59,7 +59,7 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
  * also frees its WebGL context, so at most a handful of contexts exist at
  * once no matter how many cards the catalogue has.
  */
-function useInView<T extends HTMLElement>(rootMargin = "200px") {
+function useInView<T extends HTMLElement>(rootMargin = "50px") {
   const ref = useRef<T | null>(null);
   const [inView, setInView] = useState(false);
 
