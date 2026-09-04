@@ -70,25 +70,64 @@ function Cell({
   );
 }
 
+// Half-extents of the worst-case cell content (box + a pointer label sitting
+// above it), in world units — used to build the scene's bounding box below.
+// Assumed present above EVERY cell (not just whichever cell the current step
+// happens to label) so zoom doesn't jump around as highlights change step to
+// step; it only recomputes when the array itself changes length.
+const CELL_X_HALF = 0.46; // matches the label's maxWidth={0.92}
+const CELL_Z_HALF = 0.25; // half of boxGeometry depth (0.5)
+const CELL_Y_BOTTOM = -0.45; // bottom of the box + a little shadow margin
+
 /**
- * The isometric camera's zoom used to be a fixed constant that only looked
- * right for ~4-5 cell arrays. Longer arrays (binary search, kadane's, ...)
- * push the outer cells — and their pointer labels, which are wider than a
- * cell and anchored above it — past the visible frame, clipping text like
- * "high" into "higl". This recomputes zoom from the actual canvas size and
- * the array's world-space span, so everything (including label overhang)
- * always fits with margin, regardless of array length or card size.
+ * The previous version only fit zoom to canvas WIDTH, assuming that was the
+ * tight axis. It isn't: the mini-preview cards are wide and very short
+ * (~326x96px), so with this isometric camera angle the vertical axis is
+ * actually the one that runs out of room first (the pointer label sits
+ * above the cell, and the camera's elevation means moving up in world-Y
+ * shows up as a large vertical screen offset). Fitting only the width let
+ * the label clip vertically regardless of how far it zoomed out horizontally.
+ *
+ * Fix: project the actual bounding box of the whole scene (every cell, plus
+ * a label-height allowance above each) through the camera's real view
+ * matrix, measure both resulting screen-space axes, and zoom to whichever
+ * axis is more constrained. This works for any camera angle/canvas aspect
+ * ratio instead of assuming which axis is tight.
  */
-function FitCamera({ span, compact }: { span: number; compact: boolean }) {
+function FitCamera({ arrayLength, spacing, compact }: { arrayLength: number; spacing: number; compact: boolean }) {
   const { size } = useThree();
   const camera = useThree((s) => s.camera) as THREE.OrthographicCamera;
 
   useEffect(() => {
-    const targetZoom = (size.width / span) * (compact ? 0.62 : 0.78);
-    const [min, max] = compact ? [20, 90] : [30, 120];
-    camera.zoom = THREE.MathUtils.clamp(targetZoom, min, max);
+    camera.updateMatrixWorld(true);
+    const viewMatrix = new THREE.Matrix4().copy(camera.matrixWorld).invert();
+
+    const offset = ((arrayLength - 1) * spacing) / 2;
+    const labelHalfHeight = (0.24 / (compact ? 0.45 : 1)) / 2;
+    const yTop = 0.75 + labelHalfHeight + 0.05;
+    const xMin = -offset - CELL_X_HALF;
+    const xMax = offset + CELL_X_HALF;
+
+    let halfW = 0;
+    let halfH = 0;
+    for (const x of [xMin, xMax]) {
+      for (const y of [CELL_Y_BOTTOM, yTop]) {
+        for (const z of [-CELL_Z_HALF, CELL_Z_HALF]) {
+          const p = new THREE.Vector3(x, y, z).applyMatrix4(viewMatrix);
+          halfW = Math.max(halfW, Math.abs(p.x));
+          halfH = Math.max(halfH, Math.abs(p.y));
+        }
+      }
+    }
+
+    const margin = compact ? 1.18 : 1.12; // extra breathing room beyond the exact fit
+    const zoomForWidth = size.width / (2 * halfW * margin);
+    const zoomForHeight = size.height / (2 * halfH * margin);
+    const zoom = Math.min(zoomForWidth, zoomForHeight);
+
+    camera.zoom = THREE.MathUtils.clamp(zoom, 5, 200);
     camera.updateProjectionMatrix();
-  }, [camera, size.width, size.height, span, compact]);
+  }, [camera, size.width, size.height, arrayLength, spacing, compact]);
 
   return null;
 }
@@ -97,9 +136,6 @@ export function ArrayRow2D({ step, interactive = true, compact = false }: { step
   const { array, highlights } = step;
   const spacing = 1.0;
   const offset = ((array.length - 1) * spacing) / 2;
-  // Full world-space width the scene needs: the row itself + half a cell on
-  // each end + headroom for a pointer label wider than one cell (e.g. "high").
-  const span = array.length * spacing + 2.4;
 
   const roleByIndex = useMemo(() => {
     const m = new Map<number, { role: IndexRole; label?: string }>();
@@ -114,7 +150,7 @@ export function ArrayRow2D({ step, interactive = true, compact = false }: { step
       <directionalLight position={[3, 5, 4]} intensity={0.9} color="#e0a67c" castShadow />
       {/* fixed isometric orthographic camera — no vertical rotation for a flat 1D structure */}
       <OrthographicCamera makeDefault position={[4, 4.2, 6]} near={0.1} far={50} />
-      <FitCamera span={span} compact={compact} />
+      <FitCamera arrayLength={array.length} spacing={spacing} compact={compact} />
       {array.map((v, i) => (
         <Cell
           key={i}
@@ -129,8 +165,8 @@ export function ArrayRow2D({ step, interactive = true, compact = false }: { step
         makeDefault
         enabled={interactive}
         enableRotate={false}
-        minZoom={20}
-        maxZoom={120}
+        minZoom={5}
+        maxZoom={200}
         target={[0, 0, 0]}
       />
     </Canvas>
