@@ -13,6 +13,10 @@ interface Text3DProps {
   outlineColor?: string | number;
   outlineWidth?: number;
   pixelScale?: number;
+  /** Cap the sprite's on-screen width (world units). Longer strings (e.g.
+   * "high" vs "R") shrink proportionally instead of bleeding past it —
+   * without this, multi-char labels can overflow into neighboring cells. */
+  maxWidth?: number;
   children?: React.ReactNode;
 }
 
@@ -128,7 +132,7 @@ function buildTextTexture(
  * expecting this compensation; it just wasn't wired up here.
  */
 export function Text3D(props: Text3DProps) {
-  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, pixelScale = 1, children } = props;
+  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, pixelScale = 1, maxWidth, children } = props;
 
   const text = typeof children === "string" || typeof children === "number" ? String(children) : "";
   const colorStr = typeof color === "number" ? `#${color.toString(16).padStart(6, "0")}` : color;
@@ -167,8 +171,13 @@ export function Text3D(props: Text3DProps) {
   if (!built) return null;
 
   const pos = toVec(position);
-  const height = fontSize / pixelScale;
-  const width = height * built.aspect;
+  let height = fontSize / pixelScale;
+  let width = height * built.aspect;
+  if (maxWidth !== undefined && width > maxWidth) {
+    const shrink = maxWidth / width;
+    width *= shrink;
+    height *= shrink;
+  }
 
   return (
     <sprite position={pos} scale={[width, height, 1]} renderOrder={10}>

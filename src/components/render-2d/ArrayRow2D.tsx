@@ -53,7 +53,15 @@ function Cell({
         {String(value)}
       </Text3D>
       {label && (
-        <Text3D position={[0, 0.75, 0]} fontSize={0.24} color="#d97a4d" anchorX="center" anchorY="middle" pixelScale={compact ? 0.45 : 1}>
+        <Text3D
+          position={[0, 0.75, 0]}
+          fontSize={0.24}
+          color="#d97a4d"
+          anchorX="center"
+          anchorY="middle"
+          pixelScale={compact ? 0.45 : 1}
+          maxWidth={0.92}
+        >
           {label}
         </Text3D>
       )}
