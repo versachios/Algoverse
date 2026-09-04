@@ -1,0 +1,64 @@
+diff --git a/src/components/TopicGraph3D.tsx b/src/components/TopicGraph3D.tsx
+index d518c1b..5f414d9 100644
+--- a/src/components/TopicGraph3D.tsx
++++ b/src/components/TopicGraph3D.tsx
+@@ -3,8 +3,7 @@
+ import { useMemo, useRef, useState } from "react";
+ import { useRouter } from "next/navigation";
+ import { Canvas, useFrame } from "@react-three/fiber";
+-import { Billboard, Line, OrbitControls } from "@react-three/drei";
+-import { Text3D } from "@/components/render-3d/Text3D";
++import { Billboard, Line, OrbitControls, Text } from "@react-three/drei";
+ import * as THREE from "three";
+ import { catalogue, groups } from "@/algorithms/catalogue";
+ 
+@@ -58,7 +57,7 @@ function Sun() {
+       </mesh>
+       <pointLight position={[0, 0, 0]} intensity={1.4} color="#d97a4d" distance={14} />
+       <Billboard position={[0, 0.95, 0]}>
+-        <Text3D
++        <Text
+           fontSize={0.26}
+           color={hovered ? "#ffd9b0" : "#ece7dc"}
+           anchorX="center"
+@@ -67,11 +66,11 @@ function Sun() {
+           outlineColor="#0d0c0a"
+         >
+           ALGOVERSE
+-        </Text3D>
++        </Text>
+       </Billboard>
+       {hovered && (
+         <Billboard position={[0, 0.65, 0]}>
+-          <Text3D
++          <Text
+             fontSize={0.14}
+             color="#8f897d"
+             anchorX="center"
+@@ -80,7 +79,7 @@ function Sun() {
+             outlineColor="#0d0c0a"
+           >
+             mở repo trên GitHub
+-          </Text3D>
++          </Text>
+         </Billboard>
+       )}
+     </group>
+@@ -151,7 +150,7 @@ function Planet({
+       </mesh>
+       {hovered && (
+         <Billboard position={[0, 0.34, 0]}>
+-          <Text3D
++          <Text
+             fontSize={0.19}
+             color={planet.ready ? "#ece7dc" : "#8f897d"}
+             anchorX="center"
+@@ -160,7 +159,7 @@ function Planet({
+             outlineColor="#0d0c0a"
+           >
+             {planet.name}
+-          </Text3D>
++          </Text>
+         </Billboard>
+       )}
+     </group>

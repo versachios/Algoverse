@@ -66,9 +66,14 @@ function buildTextTexture(text: string, color: string, outlineColor?: string, ou
   ctx.fillText(text, cx, cy);
 
   const texture = new THREE.CanvasTexture(canvas);
-  texture.minFilter = THREE.LinearFilter;
+  // Mipmaps matter a lot here: MiniPreview cards render this same texture at
+  // a fraction of its native size, and without mips a minified canvas
+  // texture aliases — thin multi-character strings (e.g. "-3") collapse into
+  // an unreadable blur while single bold digits happen to survive, which is
+  // exactly the "some numbers show, some don't" pattern this was causing.
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = false;
+  texture.generateMipmaps = true;
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return { texture, aspect: canvas.width / canvas.height };
