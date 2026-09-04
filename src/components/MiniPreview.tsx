@@ -77,8 +77,45 @@ function useInView<T extends HTMLElement>(rootMargin = "50px") {
   return { ref, inView };
 }
 
+/**
+ * Being "in view" isn't enough on its own — the homepage's TopicGraph3D is
+ * the FIRST WebGL context created on the page, which makes it the browser's
+ * "oldest" context. If enough MiniPreview canvases mount at once to push the
+ * page's total context count near the browser's cap, the graph gets
+ * force-killed and has to remount, which in turn breaks its hover labels
+ * (a separate downstream bug). Rather than patch that symptom, cap how many
+ * MiniPreview canvases can be mounted at the same time so the total context
+ * count never gets close to the limit in the first place.
+ */
+const MAX_ACTIVE_PREVIEWS = 6;
+const activeSlots = new Set<string>();
+
+function usePreviewSlot(id: string, wantActive: boolean) {
+  const [granted, setGranted] = useState(false);
+
+  useEffect(() => {
+    if (!wantActive) {
+      activeSlots.delete(id);
+      setGranted(false);
+      return;
+    }
+    if (activeSlots.has(id) || activeSlots.size < MAX_ACTIVE_PREVIEWS) {
+      activeSlots.add(id);
+      setGranted(true);
+    } else {
+      setGranted(false); // pool full — stays paused even though in view
+    }
+    return () => {
+      activeSlots.delete(id);
+    };
+  }, [id, wantActive]);
+
+  return granted;
+}
+
 export function MiniPreview({ slug }: { slug: string }) {
   const { ref, inView } = useInView<HTMLDivElement>();
+  const active = usePreviewSlot(slug, inView);
   const algorithm = getAlgorithm(slug);
   const [steps, setSteps] = useState<AlgorithmStep[]>(() => [
     ...algorithm.run(PREVIEW_INPUTS[slug] ?? [4, 2, 6, 1]),
@@ -86,7 +123,7 @@ export function MiniPreview({ slug }: { slug: string }) {
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
-    if (!inView) return; // pause stepping while off-screen too — no point animating what isn't rendered
+    if (!active) return; // pause stepping while off-screen or waiting for a free slot
     const id = setInterval(() => {
       setCursor((c) => {
         if (c + 1 >= steps.length) {
@@ -97,13 +134,13 @@ export function MiniPreview({ slug }: { slug: string }) {
       });
     }, 700);
     return () => clearInterval(id);
-  }, [inView, steps.length, algorithm, slug]);
+  }, [active, steps.length, algorithm, slug]);
 
   const step = steps[cursor];
 
   return (
     <div ref={ref} className="h-24 pointer-events-none -mx-1">
-      {!inView || !step ? null : isTreeStep(step) ? (
+      {!active || !step ? null : isTreeStep(step) ? (
         <TreeScene step={step} interactive={false} compact />
       ) : isRbtStep(step) ? (
         <RbtScene step={step} interactive={false} compact />

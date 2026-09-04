@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useEffect, useMemo } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
+import * as THREE from "three";
 import type { ArrayStep, IndexRole } from "@/algorithms/types";
 import { Text3D } from "@/components/render-3d/Text3D";
 
@@ -69,10 +70,36 @@ function Cell({
   );
 }
 
+/**
+ * The isometric camera's zoom used to be a fixed constant that only looked
+ * right for ~4-5 cell arrays. Longer arrays (binary search, kadane's, ...)
+ * push the outer cells — and their pointer labels, which are wider than a
+ * cell and anchored above it — past the visible frame, clipping text like
+ * "high" into "higl". This recomputes zoom from the actual canvas size and
+ * the array's world-space span, so everything (including label overhang)
+ * always fits with margin, regardless of array length or card size.
+ */
+function FitCamera({ span, compact }: { span: number; compact: boolean }) {
+  const { size } = useThree();
+  const camera = useThree((s) => s.camera) as THREE.OrthographicCamera;
+
+  useEffect(() => {
+    const targetZoom = (size.width / span) * (compact ? 0.62 : 0.78);
+    const [min, max] = compact ? [20, 90] : [30, 120];
+    camera.zoom = THREE.MathUtils.clamp(targetZoom, min, max);
+    camera.updateProjectionMatrix();
+  }, [camera, size.width, size.height, span, compact]);
+
+  return null;
+}
+
 export function ArrayRow2D({ step, interactive = true, compact = false }: { step: ArrayStep; interactive?: boolean; compact?: boolean }) {
   const { array, highlights } = step;
   const spacing = 1.0;
   const offset = ((array.length - 1) * spacing) / 2;
+  // Full world-space width the scene needs: the row itself + half a cell on
+  // each end + headroom for a pointer label wider than one cell (e.g. "high").
+  const span = array.length * spacing + 2.4;
 
   const roleByIndex = useMemo(() => {
     const m = new Map<number, { role: IndexRole; label?: string }>();
@@ -86,7 +113,8 @@ export function ArrayRow2D({ step, interactive = true, compact = false }: { step
       <ambientLight intensity={0.7} color="#f2e9dc" />
       <directionalLight position={[3, 5, 4]} intensity={0.9} color="#e0a67c" castShadow />
       {/* fixed isometric orthographic camera — no vertical rotation for a flat 1D structure */}
-      <OrthographicCamera makeDefault position={[4, 4.2, 6]} zoom={70} near={0.1} far={50} />
+      <OrthographicCamera makeDefault position={[4, 4.2, 6]} near={0.1} far={50} />
+      <FitCamera span={span} compact={compact} />
       {array.map((v, i) => (
         <Cell
           key={i}
@@ -101,12 +129,10 @@ export function ArrayRow2D({ step, interactive = true, compact = false }: { step
         makeDefault
         enabled={interactive}
         enableRotate={false}
-        minZoom={40}
+        minZoom={20}
         maxZoom={120}
         target={[0, 0, 0]}
       />
     </Canvas>
   );
 }
-
-
