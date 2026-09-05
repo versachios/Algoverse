@@ -4,9 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { getAlgorithm } from "@/algorithms";
 
-// Dynamic + ssr:false: each scene becomes its own chunk fetched only once a
-// card of that kind actually mounts, instead of one ~1MB three.js bundle
-// blocking the whole "Chủ đề" section (and every other page) from painting.
 const BarsScene = dynamic(() => import("@/components/render-3d/BarsScene").then((m) => m.BarsScene), { ssr: false });
 const ArrayRow2D = dynamic(() => import("@/components/render-2d/ArrayRow2D").then((m) => m.ArrayRow2D), { ssr: false });
 const TreeScene = dynamic(() => import("@/components/render-3d/TreeScene").then((m) => m.TreeScene), { ssr: false });
@@ -46,19 +43,6 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
   kadane: [-2, 1, -3, 4, -1, 2, 1],
 };
 
-/**
- * Each preview mounts its own <Canvas>, and each <Canvas> opens its own WebGL
- * context. Browsers cap the number of live WebGL contexts per page (commonly
- * ~16) — once the catalogue grew past that, the oldest contexts started
- * getting force-killed ("Too many active WebGL contexts. Oldest context
- * will be lost."), which is what caused previews to go blank seemingly at
- * random across the whole site, not just in newly-added algorithms.
- *
- * Fix: only mount the actual <Canvas>-based scene while the card is inside
- * (or near) the viewport. Scrolling a card away unmounts its scene, which
- * also frees its WebGL context, so at most a handful of contexts exist at
- * once no matter how many cards the catalogue has.
- */
 function useInView<T extends HTMLElement>(rootMargin = "50px") {
   const ref = useRef<T | null>(null);
   const [inView, setInView] = useState(false);
@@ -78,36 +62,54 @@ function useInView<T extends HTMLElement>(rootMargin = "50px") {
 }
 
 /**
- * Being "in view" isn't enough on its own — the homepage's TopicGraph3D is
- * the FIRST WebGL context created on the page, which makes it the browser's
- * "oldest" context. If enough MiniPreview canvases mount at once to push the
- * page's total context count near the browser's cap, the graph gets
- * force-killed and has to remount, which in turn breaks its hover labels
- * (a separate downstream bug). Rather than patch that symptom, cap how many
- * MiniPreview canvases can be mounted at the same time so the total context
- * count never gets close to the limit in the first place.
+ * Each preview mounts its own <Canvas> -> its own WebGL context, and
+ * browsers cap concurrent contexts (~16/page). This pool caps how many
+ * MiniPreview canvases can be mounted at once so that total never gets
+ * close to the limit (also protects the homepage's TopicGraph3D, which is
+ * the page's oldest context and gets force-killed first if the cap is hit).
+ *
+ * First version of this just refused a slot to any newcomer once the pool
+ * was full and never took it back — cards granted a slot early kept it
+ * even after scrolling mostly out of view, so on a long catalogue page
+ * everything past the first ~6 cards stayed permanently blank. This
+ * version evicts the LEAST-recently-granted slot to make room for a new
+ * card wanting one, so the pool always tracks whatever's most relevant
+ * right now instead of whoever asked first.
  */
-const MAX_ACTIVE_PREVIEWS = 6;
-const activeSlots = new Set<string>();
+const MAX_ACTIVE_PREVIEWS = 10;
+const grantOrder: string[] = []; // oldest-granted first
+const setters = new Map<string, (v: boolean) => void>();
+
+function acquireSlot(id: string, setGranted: (v: boolean) => void) {
+  setters.set(id, setGranted);
+  const idx = grantOrder.indexOf(id);
+  if (idx !== -1) grantOrder.splice(idx, 1);
+  grantOrder.push(id);
+
+  while (grantOrder.length > MAX_ACTIVE_PREVIEWS) {
+    const evictId = grantOrder.shift()!;
+    if (evictId !== id) setters.get(evictId)?.(false);
+  }
+  setGranted(true);
+}
+
+function releaseSlot(id: string) {
+  const idx = grantOrder.indexOf(id);
+  if (idx !== -1) grantOrder.splice(idx, 1);
+  setters.delete(id);
+}
 
 function usePreviewSlot(id: string, wantActive: boolean) {
   const [granted, setGranted] = useState(false);
 
   useEffect(() => {
     if (!wantActive) {
-      activeSlots.delete(id);
+      releaseSlot(id);
       setGranted(false);
       return;
     }
-    if (activeSlots.has(id) || activeSlots.size < MAX_ACTIVE_PREVIEWS) {
-      activeSlots.add(id);
-      setGranted(true);
-    } else {
-      setGranted(false); // pool full — stays paused even though in view
-    }
-    return () => {
-      activeSlots.delete(id);
-    };
+    acquireSlot(id, setGranted);
+    return () => releaseSlot(id);
   }, [id, wantActive]);
 
   return granted;
