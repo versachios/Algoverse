@@ -60,7 +60,7 @@ Nhấp vào link [tại đây](https://hvt-algoverse.pages.dev/) để trải ng
 
 Algoverse đang trong quá trình phát triển tích cực. Giao diện, thuật toán và nội dung lý thuyết sẽ **liên tục được bổ sung**.
 
-Phần preview planet của homepages, các preview của bài học đang bị lỗi. Ban quản trị sẽ xử lý trong thời gian **sớm nhất.**
+Tất cả các lỗi **đều đã được ban quan trị sửa chữa**.
 
 ---
 
