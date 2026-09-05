@@ -27,8 +27,9 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   "bubble-sort": [6, 2, 9, 4, 1, 7, 3],
   "selection-sort": [6, 2, 9, 4, 1, 7, 3],
   "insertion-sort": [6, 2, 9, 4, 1, 7, 3],
-  "binary-search": [1, 3, 4, 6, 8, 9, 11, 14],
-  "linear-search": [6, 2, 9, 4, 1, 7, 3],
+  // Binary/linear search pack [target, a...] like two-pointers.
+  "binary-search": [9, 1, 3, 4, 6, 8, 9, 11, 14],
+  "linear-search": [4, 6, 2, 9, 4, 1, 7, 3],
   bst: [50, 30, 70, 20, 40, 60, 80, 10],
   "avl-tree": [10, 20, 30, 40, 50, 25],
   "min-heap": [9, 4, 7, 1, 8, 3, 6],
@@ -76,8 +77,14 @@ const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
   "bubble-sort": [{ label: "Mảng a", fixed: 0 }],
   "selection-sort": [{ label: "Mảng a", fixed: 0 }],
   "insertion-sort": [{ label: "Mảng a", fixed: 0 }],
-  "binary-search": [{ label: "Mảng a (đã sắp xếp tăng dần)", fixed: 0 }],
-  "linear-search": [{ label: "Mảng a", fixed: 0 }],
+  "binary-search": [
+    { label: "target — số cần tìm", fixed: 1 },
+    { label: "Mảng a (đã sắp xếp tăng dần)", fixed: 0 },
+  ],
+  "linear-search": [
+    { label: "target — số cần tìm", fixed: 1 },
+    { label: "Mảng a", fixed: 0 },
+  ],
   bst: [{ label: "Dãy giá trị chèn", fixed: 0 }],
   "avl-tree": [{ label: "Dãy giá trị chèn", fixed: 0 }],
   "min-heap": [{ label: "Dãy giá trị chèn", fixed: 0 }],

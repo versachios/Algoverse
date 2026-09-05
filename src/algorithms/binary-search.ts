@@ -15,10 +15,12 @@ export const code = `int binarySearch(vector<int>& a, int target) {
     return -1; // không tìm thấy
 }`;
 
-export function* run(input: number[], target?: number): Generator<AlgorithmStep, void, unknown> {
-  const a = [...input].sort((x, y) => x - y);
+/** Input packing: [target, a0, a1, ...] — a is sorted ascending before the search runs. */
+export function* run(input: number[]): Generator<AlgorithmStep, void, unknown> {
+  const [target, ...rest] = input;
+  const a = [...rest].sort((x, y) => x - y);
   const n = a.length;
-  const t = target ?? a[Math.floor(Math.random() * n)];
+  const t = target;
   let low = 0;
   let high = n - 1;
   let comparisons = 0;

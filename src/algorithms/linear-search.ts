@@ -9,10 +9,12 @@ export const code = `int linearSearch(vector<int>& a, int target) {
     return -1; // không tìm thấy
 }`;
 
-export function* run(input: number[], target?: number): Generator<AlgorithmStep, void, unknown> {
-  const a = [...input];
+/** Input packing: [target, a0, a1, ...]. */
+export function* run(input: number[]): Generator<AlgorithmStep, void, unknown> {
+  const [target, ...rest] = input;
+  const a = [...rest];
   const n = a.length;
-  const t = target ?? a[Math.floor(Math.random() * n)];
+  const t = target;
   let comparisons = 0;
 
   yield {
