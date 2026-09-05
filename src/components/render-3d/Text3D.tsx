@@ -17,6 +17,16 @@ interface Text3DProps {
    * "high" vs "R") shrink proportionally instead of bleeding past it —
    * without this, multi-char labels can overflow into neighboring cells. */
   maxWidth?: number;
+  /** @see renderOrder — distinct draw-order value for sprites that could
+   * otherwise sort by camera distance and jitter (see full note below). */
+  renderOrder?: number;
+  /** Set false to make the text always render on top of nearby geometry.
+   * In an isometric row of cells the box of the NEXT cell sits closer to the
+   * camera than the current cell's number, so with the default (true) depth
+   * testing the neighbor's face cuts off part of the digit. Text stickers
+   * over cells generally want depthTest={false}; keep true for text that must
+   * recede naturally behind real geometry (3D scenes). */
+  depthTest?: boolean;
   children?: React.ReactNode;
 }
 
@@ -36,6 +46,20 @@ const FONT_STACK = '"IBM Plex Mono", ui-monospace, "Cascadia Code", monospace';
 // at; the sprite is then scaled down to the caller's world-unit fontSize, so
 // this only affects crispness, never on-screen size.
 const RASTER_PX = 192;
+
+// How much of a raster em box a digit actually fills with ink. Measured on
+// IBM Plex Mono 600 rendered headlessly: an "8" fills ~98 of 192 raster px of
+// vertical ink. Together with the vertical canvas padding (0.4 em each side),
+// this is the TRUE fraction of the sprite's total height that shows ink:
+//   (0.51 * 192) / (192 + 192 * 0.4 * 2) = 0.2833...
+// Fitting/dimension calculations must use THIS (a 0.556 "the whole em box"
+// estimate over-reserved space and left digits far smaller than intended).
+export const TEXT_GLYPH_FRAC =
+  (RASTER_PX * 0.51) / (RASTER_PX + RASTER_PX * 0.4 * 2);
+
+export function textGlyphHeight(fontSize: number, pixelScale: number) {
+  return (fontSize / pixelScale) * TEXT_GLYPH_FRAC;
+}
 
 function buildTextTexture(
   text: string,
@@ -132,7 +156,7 @@ function buildTextTexture(
  * expecting this compensation; it just wasn't wired up here.
  */
 export function Text3D(props: Text3DProps) {
-  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, pixelScale = 1, maxWidth, children } = props;
+  const { position, color = "#ece7dc", fontSize = 0.2, outlineColor, outlineWidth, pixelScale = 1, maxWidth, renderOrder = 10, depthTest = true, children } = props;
 
   const text = typeof children === "string" || typeof children === "number" ? String(children) : "";
   const colorStr = typeof color === "number" ? `#${color.toString(16).padStart(6, "0")}` : color;
@@ -180,8 +204,8 @@ export function Text3D(props: Text3DProps) {
   }
 
   return (
-    <sprite position={pos} scale={[width, height, 1]} renderOrder={10}>
-      <spriteMaterial map={built.texture} transparent depthWrite={false} />
+    <sprite position={pos} scale={[width, height, 1]} renderOrder={renderOrder}>
+      <spriteMaterial map={built.texture} transparent depthWrite={false} depthTest={depthTest} />
     </sprite>
   );
 }
