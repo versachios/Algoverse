@@ -168,12 +168,35 @@ export interface RbtStep {
   stats?: Record<string, number>;
 }
 
-export type AlgorithmStep = ArrayStep | TreeStep | GridStep | GraphStep | HashStep | RbtStep;
+/** A single snapshot for two-pointers-on-two-arrays patterns (e.g. merging two
+ *  sorted arrays). Two independent rows, each with its own pointer highlights,
+ *  plus an optional third row for a result/output array being built up. */
+export interface DualArrayStep {
+  kind: "dual-array";
+  arrayA: number[];
+  arrayB: number[];
+  highlightsA: IndexHighlight[];
+  highlightsB: IndexHighlight[];
+  labelA?: string;
+  labelB?: string;
+  /** Optional output row (e.g. the merged array so far). Omit if not applicable. */
+  result?: number[];
+  resultLabel?: string;
+  highlights: IndexHighlight[]; // always [] — kept for StepTrace compatibility
+  codeLine: number;
+  explanation: string;
+  stats?: Record<string, number>;
+}
+
+export type AlgorithmStep = ArrayStep | TreeStep | GridStep | GraphStep | HashStep | RbtStep | DualArrayStep;
 
 /** Runtime guards — ArrayStep is the implicit default (no `kind` field) so the
  *  5 existing array algorithms never needed editing when this union was introduced. */
 export function isTreeStep(step: AlgorithmStep): step is TreeStep {
   return (step as TreeStep).kind === "tree";
+}
+export function isDualArrayStep(step: AlgorithmStep): step is DualArrayStep {
+  return (step as DualArrayStep).kind === "dual-array";
 }
 export function isGridStep(step: AlgorithmStep): step is GridStep {
   return (step as GridStep).kind === "grid";

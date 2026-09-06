@@ -15,7 +15,9 @@ import { unorderedMap } from "./unordered-map";
 import { unorderedSet } from "./unordered-set";
 import { treeMap } from "./tree-map";
 import { treeSet } from "./tree-set";
-import { twoPointers } from "./two-pointers";
+import { twoPointersConverging } from "./two-pointers-converging";
+import { twoPointersSameDirection } from "./two-pointers-same-direction";
+import { twoPointersTwoArrays } from "./two-pointers-two-arrays";
 import { slidingWindow } from "./sliding-window";
 import { kadane } from "./kadane";
 import type { AlgorithmModule } from "./types";
@@ -38,7 +40,9 @@ export const algorithmRegistry: Record<string, AlgorithmModule> = {
   "unordered-set": unorderedSet,
   "tree-map": treeMap,
   "tree-set": treeSet,
-  "two-pointers": twoPointers,
+  "two-pointers-converging": twoPointersConverging,
+  "two-pointers-same-direction": twoPointersSameDirection,
+  "two-pointers-two-arrays": twoPointersTwoArrays,
   "sliding-window": slidingWindow,
   kadane,
 };

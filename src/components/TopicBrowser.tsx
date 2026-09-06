@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
-import { catalogue, levels, categories, type CatalogueEntry, type Category } from "@/algorithms/catalogue";
+import { catalogue, levels, categories, groupLabel, type CatalogueEntry, type Category } from "@/algorithms/catalogue";
 import { MiniPreview } from "@/components/MiniPreview";
 
 export function TopicBrowser() {
@@ -75,13 +75,13 @@ export function TopicBrowser() {
               )}
             >
               <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-[var(--color-muted)] font-mono-tech">
-                <span>{c.group}</span>
+                <span>{groupLabel(c.group)}</span>
                 <span className="text-[var(--color-signal-amber)]">{c.renderMode}</span>
               </div>
               <h3 className="font-display text-lg">{c.name}</h3>
               {c.ready ? (
                 <div className="rounded-sm overflow-hidden border border-[var(--color-hairline)]">
-                  <MiniPreview slug={c.slug} />
+                  <MiniPreview slug={c.previewSlug ?? c.slug} />
                 </div>
               ) : (
                 <div className="h-24 rounded-sm border border-dashed border-[var(--color-hairline)]/60 grid place-items-center text-[10px] text-[var(--color-muted)] font-mono-tech uppercase tracking-widest">

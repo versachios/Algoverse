@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import { twoPointers } from "@/algorithms/two-pointers";
-import { AlgorithmPageShell } from "@/components/AlgorithmPageShell";
-import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
-import TheoryContent from "@/content/theory/two-pointers.mdx";
+import { catalogue } from "@/algorithms/catalogue";
+import { LessonGroupShell } from "@/components/LessonGroupShell";
+import TheoryContent from "@/content/theory/two-pointers-overview.mdx";
+
+const entry = catalogue.find((c) => c.slug === "two-pointers")!;
 
 export const metadata: Metadata = {
-  title: "Two Pointers — Tìm cặp tổng | Algoverse",
+  title: "Two Pointers | Algoverse",
   description:
-    "Học kỹ thuật Two Pointers: tìm cặp phần tử có tổng X trên mảng đã sắp xếp trong O(n).",
+    "Học kỹ thuật Two Pointers: 3 dạng di chuyển con trỏ thường gặp — hai mảng, hội tụ một mảng, và cùng chiều một mảng.",
 };
 
-export default function TwoPointersPage() {
+export default function TwoPointersGroupPage() {
   return (
-    <AlgorithmPageShell
-      meta={twoPointers.meta}
+    <LessonGroupShell
+      group={entry.group}
+      title={entry.name}
+      summary="Một họ kỹ thuật, không phải một bài toán — chọn 1 dạng con bên phải để xem mô phỏng cụ thể."
+      basePath="/algorithms/two-pointers"
+      subLessons={entry.subLessons ?? []}
+      activeSlug={null}
       theory={
         <div className="max-w-3xl">
           <TheoryContent />
         </div>
       }
-      simulation={<AlgorithmWorkbench slug={twoPointers.meta.slug} />}
     />
   );
 }

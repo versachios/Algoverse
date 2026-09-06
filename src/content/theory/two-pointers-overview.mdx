@@ -1,0 +1,40 @@
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Two Pointers không phải là một bài toán cụ thể — mà là một họ kỹ thuật: dùng hai chỉ số (con trỏ) di chuyển có chủ đích trên dữ liệu để thay thế một vòng lặp lồng O(n²) bằng một lượt quét O(n).*
+
+## Ba kiểu di chuyển thường gặp
+
+Cùng gọi là "hai con trỏ", nhưng cách chúng di chuyển — và bài toán chúng giải — khác nhau hẳn. Chọn 1 trong 3 dạng con bên phải để xem mô phỏng và code cụ thể:
+
+### 1. Hai mảng
+
+Mỗi con trỏ chạy trên **một mảng riêng** (thường cả hai đã sắp xếp). Ở mỗi bước, so sánh phần tử tại hai con trỏ để quyết định lấy phần tử nào trước.
+
+- Ví dụ kinh điển: trộn hai mảng đã sắp xếp (bước merge của Merge Sort), giao/hợp của hai tập đã sắp xếp.
+
+### 2. Một mảng, ngược chiều (hội tụ)
+
+Hai con trỏ xuất phát ở **hai đầu** của cùng một mảng, tiến vào nhau cho đến khi gặp nhau.
+
+- Ví dụ kinh điển: tìm cặp phần tử có tổng bằng X trên mảng đã sắp xếp, kiểm tra palindrome, container chứa nhiều nước nhất.
+
+### 3. Một mảng, cùng chiều
+
+Hai con trỏ cùng đi về **một hướng** trên cùng một mảng, nhưng đóng vai trò khác nhau — một con trỏ (thường gọi `slow`) đánh dấu vị trí "hợp lệ", con trỏ còn lại (`fast`) quét về phía trước để tìm dữ liệu mới.
+
+- Ví dụ kinh điển: xoá phần tử trùng khỏi mảng đã sắp xếp, dồn số 0 về cuối mảng.
+
+## Vì sao lại nhanh hơn vòng lặp lồng?
+
+Cách làm "thô" (brute-force) cho các bài toán trên thường là thử mọi cặp chỉ số `(i, j)` — O(n²). Two Pointers tận dụng một tính chất của dữ liệu (đã sắp xếp, hoặc chỉ cần một lượt quét) để mỗi con trỏ chỉ đi tối đa n bước theo một hướng, không bao giờ đi lùi — tổng công việc còn lại O(n) hoặc O(n + m).
+
+## So sánh nhanh
+
+<ComplexityTable
+  headers={["Dạng", "Số mảng", "Hướng di chuyển", "Độ phức tạp"]}
+  rows={[
+    ["2 mảng", "2", "Mỗi con trỏ tiến trên mảng riêng", "O(n + m)"],
+    ["1 mảng, ngược chiều", "1", "Hai đầu tiến vào nhau", "O(n)"],
+    ["1 mảng, cùng chiều", "1", "Cùng hướng, khác tốc độ/vai trò", "O(n)"],
+  ]}
+/>

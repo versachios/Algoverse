@@ -96,15 +96,15 @@ export function* run(input: number[]): Generator<AlgorithmStep, void, unknown> {
   }
 }
 
-export const twoPointers: AlgorithmModule = {
+export const twoPointersConverging: AlgorithmModule = {
   meta: {
-    slug: "two-pointers",
-    name: "Two Pointers (Tìm cặp tổng)",
+    slug: "two-pointers-converging",
+    name: "1 mảng, ngược chiều",
     group: "Two Pointers",
     level: "Cấp 2 - Cấp 3",
     renderMode: "2.5d",
     summary:
-      "Kỹ thuật hai con trỏ trên mảng đã sắp xếp: di chuyển L/R để tìm cặp có tổng bằng X trong O(n).",
+      "Hai con trỏ ở hai đầu một mảng đã sắp xếp, tiến vào nhau: tìm cặp có tổng bằng X trong O(n).",
   },
   code,
   run,

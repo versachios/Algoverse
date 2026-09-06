@@ -1,0 +1,41 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Hai con trỏ cùng đi về một hướng trên cùng một mảng — nhưng đóng vai trò khác nhau: `slow` đánh dấu vùng kết quả, `fast` đi trước để dò dữ liệu mới.*
+
+## Bài toán
+
+Cho mảng `a[]` đã sắp xếp tăng dần, có thể chứa phần tử trùng. Xoá các phần tử trùng ngay trên mảng (in-place), chỉ giữ lại đúng 1 bản mỗi giá trị.
+
+## Ý tưởng
+
+Đặt `slow = 0` (vị trí ghi, luôn trỏ vào phần tử hợp lệ cuối cùng), cho `fast` quét từ `1`:
+
+1. Nếu `a[fast] != a[slow]` → gặp giá trị mới: tăng `slow`, ghi `a[slow] = a[fast]`.
+2. Nếu `a[fast] == a[slow]` → trùng, chỉ `fast` tiến lên, `slow` đứng yên.
+
+Khác với dạng "ngược chiều" — ở đây cả hai con trỏ luôn đi về phía trước, `fast` không bao giờ chờ hay lùi lại; `slow` chỉ tiến khi có dữ liệu mới cần ghi.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n)", "fast quét qua mảng đúng 1 lượt"],
+    ["Không gian", "O(1)", "Sửa trực tiếp trên mảng gốc (in-place)"],
+    ["Yêu cầu", "Mảng đã sắp xếp", "Để các phần tử trùng luôn đứng cạnh nhau"],
+  ]}
+/>
+
+<Quiz
+  question="Khi a[fast] trùng với a[slow], ta nên làm gì?"
+  options={[
+    "Tăng cả slow và fast",
+    "Chỉ tăng fast, giữ nguyên slow",
+    "Chỉ tăng slow, giữ nguyên fast",
+    "Xoá phần tử tại fast rồi dừng lại",
+  ]}
+  answer={1}
+  correctNote="Đúng — trùng nghĩa là chưa có gì mới để ghi, chỉ fast cần tiến lên để tìm giá trị tiếp theo."
+  incorrectNote="Chưa đúng — slow chỉ nên tiến khi tìm thấy giá trị MỚI để ghi vào, còn fast luôn tiến để tiếp tục quét."
+/>

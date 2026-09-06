@@ -1,0 +1,42 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Hai con trỏ, mỗi con trỏ chạy trên một mảng riêng — so sánh phần tử ở hai con trỏ để quyết định lấy phần tử nào trước.*
+
+## Bài toán
+
+Cho hai mảng `a[]` và `b[]` đã sắp xếp tăng dần. Trộn chúng thành một mảng `res[]` duy nhất, vẫn giữ thứ tự tăng dần.
+
+## Ý tưởng
+
+Đặt `i = 0` trên `a`, `j = 0` trên `b`:
+
+1. So sánh `a[i]` và `b[j]`.
+2. Lấy phần tử nhỏ hơn (hoặc bằng) vào kết quả, tăng con trỏ tương ứng.
+3. Khi một mảng hết trước, lấy nốt toàn bộ phần còn lại của mảng kia — vì nó đã sắp xếp nên không cần so sánh gì thêm.
+
+Khác với dạng "1 mảng" — ở đây mỗi con trỏ chỉ tiến trên "sân nhà" của nó, không bao giờ đi sang mảng còn lại.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n + m)", "Mỗi phần tử của cả hai mảng được xét đúng 1 lần"],
+    ["Không gian", "O(n + m)", "Mảng kết quả chứa toàn bộ phần tử"],
+    ["Yêu cầu", "Cả hai mảng đã sắp xếp", "Đây cũng chính là bước trộn của Merge Sort"],
+  ]}
+/>
+
+<Quiz
+  question="Khi mảng B đã lấy hết mà mảng A vẫn còn phần tử, ta cần làm gì?"
+  options={[
+    "Dừng thuật toán ngay, bỏ qua phần còn lại của A",
+    "So sánh phần còn lại của A với phần tử cuối của B",
+    "Lấy nốt toàn bộ phần còn lại của A vào kết quả",
+    "Sắp xếp lại phần còn lại của A trước khi lấy",
+  ]}
+  answer={2}
+  correctNote="Đúng — A đã sắp xếp sẵn nên phần còn lại chắc chắn theo đúng thứ tự, chỉ cần nối vào cuối kết quả."
+  incorrectNote="Chưa đúng — vì A đã sắp xếp, phần còn lại của nó có thể lấy thẳng vào kết quả mà không cần so sánh thêm."
+/>

@@ -1,5 +1,12 @@
 export type Category = "Cấu trúc dữ liệu" | "Giải thuật";
 
+/** A sub-lesson inside a Master-Detail lesson group (see `subLessons` below). */
+export interface SubLesson {
+  slug: string;
+  name: string;
+  ready: boolean;
+}
+
 export interface CatalogueEntry {
   slug: string;
   name: string;
@@ -8,6 +15,25 @@ export interface CatalogueEntry {
   level: "Cơ bản" | "Cấp 2 - Cấp 3" | "Olympiad";
   renderMode: "3d" | "2.5d";
   ready: boolean;
+  /** If set, the card/graph preview renders this slug's algorithm instead of
+   *  `slug` itself — used by Master-Detail group entries whose own slug has
+   *  no runnable algorithm (it renders the group's theory + sidebar instead). */
+  previewSlug?: string;
+  /** If set, this entry is a Master-Detail lesson group: its own page shows
+   *  general theory by default, and the sidebar lists these sub-lessons —
+   *  each a real algorithm reachable at `/algorithms/${slug}/${sub.slug}`. */
+  subLessons?: SubLesson[];
+}
+
+/** Display-only override for a catalogue `group` value — lets a group's
+ *  internal identifier (used for routing/orbits) differ from the label shown
+ *  on cards, so renaming what's shown never touches data/routing. */
+const GROUP_LABELS: Record<string, string> = {
+  "Two Pointers": "Kỹ thuật mảng",
+};
+
+export function groupLabel(group: string): string {
+  return GROUP_LABELS[group] ?? group;
 }
 
 export const catalogue: CatalogueEntry[] = [
@@ -36,7 +62,21 @@ export const catalogue: CatalogueEntry[] = [
   { slug: "binary-search-on-answer", name: "Binary Search trên đáp án", group: "Searching", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: false },
 
   // ---- Giải thuật: Hai con trỏ ----
-  { slug: "two-pointers", name: "Two Pointers (Tìm cặp tổng)", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
+  {
+    slug: "two-pointers",
+    name: "Two Pointers",
+    group: "Two Pointers",
+    category: "Giải thuật",
+    level: "Cấp 2 - Cấp 3",
+    renderMode: "2.5d",
+    ready: true,
+    previewSlug: "two-pointers-converging",
+    subLessons: [
+      { slug: "two-pointers-two-arrays", name: "2 mảng", ready: true },
+      { slug: "two-pointers-converging", name: "1 mảng, ngược chiều", ready: true },
+      { slug: "two-pointers-same-direction", name: "1 mảng, cùng chiều", ready: true },
+    ],
+  },
   { slug: "sliding-window", name: "Sliding Window", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
   { slug: "kadane", name: "Kadane's Algorithm", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
   { slug: "prefix-sum", name: "Prefix Sum / Difference Array", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: false },

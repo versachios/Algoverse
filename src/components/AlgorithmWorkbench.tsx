@@ -18,10 +18,11 @@ const GraphScene = dynamic(() => import("@/components/render-3d/GraphScene").the
 const HashTableScene = dynamic(() => import("@/components/render-3d/HashTableScene").then((m) => m.HashTableScene), { ssr: false, loading: () => SCENE_LOADING });
 const RbtScene = dynamic(() => import("@/components/render-3d/RbtScene").then((m) => m.RbtScene), { ssr: false, loading: () => SCENE_LOADING });
 const ArrayRow2D = dynamic(() => import("@/components/render-2d/ArrayRow2D").then((m) => m.ArrayRow2D), { ssr: false, loading: () => SCENE_LOADING });
+const DualArrayRow2D = dynamic(() => import("@/components/render-2d/DualArrayRow2D").then((m) => m.DualArrayRow2D), { ssr: false, loading: () => SCENE_LOADING });
 import { CodePanel } from "@/components/CodePanel";
 import { StepTrace } from "@/components/StepTrace";
 import { getAlgorithm } from "@/algorithms";
-import { isGridStep, isGraphStep, isHashStep, isRbtStep, isTreeStep } from "@/algorithms/types";
+import { isGridStep, isGraphStep, isHashStep, isRbtStep, isTreeStep, isDualArrayStep } from "@/algorithms/types";
 
 const DEFAULT_INPUTS: Record<string, number[]> = {
   "bubble-sort": [6, 2, 9, 4, 1, 7, 3],
@@ -49,9 +50,13 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   "tree-map": [7, 1, 10, 5, 1, 20, 2, 1, 30, 9, 1, 25, 4, 3, 30, 0, 0, 20, 0],
   "tree-set": [6, 1, 10, 0, 1, 20, 0, 1, 30, 0, 1, 25, 0, 3, 25, 0],
   // Two pointers: [target, a...]; sliding window: [n, k, a...]; kadane: [a...]
-  "two-pointers": [10, 1, 3, 4, 6, 8, 9, 11, 14],
+  "two-pointers-converging": [10, 1, 3, 4, 6, 8, 9, 11, 14],
   "sliding-window": [9, 3, 3, 7, 2, 5, 1, 8, 3, 6, 4],
   kadane: [-2, 1, -3, 4, -1, 2, 1, -5, 4],
+  // Two pointers, same direction: sorted array with duplicates.
+  "two-pointers-same-direction": [1, 1, 2, 2, 2, 3, 5, 5, 6],
+  // Two pointers, two arrays: [n1, a..., b...] — both sorted ascending.
+  "two-pointers-two-arrays": [4, 1, 3, 5, 7, 2, 4, 6, 8, 9],
 };
 
 /**
@@ -68,9 +73,14 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
  */
 type InputFieldSpec = {
   label: string;
-  /** 1 = single scalar at the start of the packed input; 0 = the array field (only the last may be 0). */
+  /** 1 = single scalar at the start of the packed input; 0 = an array field. */
   fixed: 1 | 0;
   checksArrayLength?: boolean;
+  /** For a fixed:0 field that is NOT the last field: when splitting the
+   *  default input for display, its length is taken from the immediately
+   *  preceding fixed:1 field's value instead of "the rest". Only the LAST
+   *  fixed:0 field without this flag may consume "the rest" of the input. */
+  countFromPrevious?: boolean;
 };
 
 const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
@@ -133,9 +143,15 @@ const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
     { label: "M — số thao tác", fixed: 1 },
     { label: "Các thao tác (loại, khóa, 0) — 1 = chèn, 2 = xóa, 3 = tìm", fixed: 0 },
   ],
-  "two-pointers": [
+  "two-pointers-converging": [
     { label: "X — tổng mục tiêu", fixed: 1 },
     { label: "Mảng a (đã sắp xếp tăng dần)", fixed: 0 },
+  ],
+  "two-pointers-same-direction": [{ label: "Mảng a (đã sắp xếp tăng dần)", fixed: 0 }],
+  "two-pointers-two-arrays": [
+    { label: "n1 — số phần tử mảng A", fixed: 1 },
+    { label: "Mảng A (đã sắp xếp tăng dần)", fixed: 0, countFromPrevious: true },
+    { label: "Mảng B (đã sắp xếp tăng dần)", fixed: 0 },
   ],
   "sliding-window": [
     { label: "n — số phần tử mảng", fixed: 1, checksArrayLength: true },
@@ -149,9 +165,18 @@ const FALLBACK_FIELDS: InputFieldSpec[] = [{ label: "Mảng a", fixed: 0 }];
 /** Split a packed input into one joined-string per field for the text inputs. */
 function splitPacked(packed: number[], fields: InputFieldSpec[]): string[] {
   let cursor = 0;
+  let lastFixedValue = 0;
   return fields.map((f) => {
-    const count = f.fixed === 0 ? packed.length - cursor : f.fixed;
+    let count: number;
+    if (f.fixed === 1) {
+      count = 1;
+    } else if (f.countFromPrevious) {
+      count = lastFixedValue;
+    } else {
+      count = packed.length - cursor; // consumes the rest
+    }
     const text = packed.slice(cursor, cursor + count).join(", ");
+    if (f.fixed === 1) lastFixedValue = packed[cursor] ?? 0;
     cursor += count;
     return text;
   });
@@ -165,6 +190,7 @@ function parseFields(
   maxArray: number,
 ): ParseResult {
   const packed: number[] = [];
+  let lastFixedValue = 0;
   for (let i = 0; i < fields.length; i++) {
     const f = fields[i];
     const raw = texts[i] ?? "";
@@ -177,10 +203,13 @@ function parseFields(
       if (vals.length > maxArray) return { error: `Mảng quá dài — tối đa ${maxArray} số.` };
       if (vals.some((v) => !Number.isFinite(v)))
         return { error: `Dòng "${f.label}" chứa giá trị không phải số.` };
+      if (f.countFromPrevious && vals.length !== lastFixedValue)
+        return { error: `"${f.label}" phải có đúng ${lastFixedValue} phần tử (theo trường phía trên).` };
       packed.push(...vals);
     } else {
       if (vals.length !== 1 || !Number.isFinite(vals[0]))
         return { error: `Trường "${f.label}" cần đúng 1 số.` };
+      lastFixedValue = vals[0];
       packed.push(vals[0]);
     }
   }
@@ -240,6 +269,8 @@ export function AlgorithmWorkbench({ slug }: { slug: string }) {
               <GridScene step={step} />
             ) : isGraphStep(step) ? (
               <GraphScene step={step} />
+            ) : isDualArrayStep(step) ? (
+              <DualArrayRow2D step={step} />
             ) : algorithm.meta.renderMode === "3d" ? (
               <BarsScene step={step} />
             ) : (

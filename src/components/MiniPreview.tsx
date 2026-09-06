@@ -6,6 +6,7 @@ import { getAlgorithm } from "@/algorithms";
 
 const BarsScene = dynamic(() => import("@/components/render-3d/BarsScene").then((m) => m.BarsScene), { ssr: false });
 const ArrayRow2D = dynamic(() => import("@/components/render-2d/ArrayRow2D").then((m) => m.ArrayRow2D), { ssr: false });
+const DualArrayRow2D = dynamic(() => import("@/components/render-2d/DualArrayRow2D").then((m) => m.DualArrayRow2D), { ssr: false });
 const TreeScene = dynamic(() => import("@/components/render-3d/TreeScene").then((m) => m.TreeScene), { ssr: false });
 const GridScene = dynamic(() => import("@/components/render-3d/GridScene").then((m) => m.GridScene), { ssr: false });
 const GraphScene = dynamic(() => import("@/components/render-3d/GraphScene").then((m) => m.GraphScene), { ssr: false });
@@ -17,6 +18,7 @@ import {
   isHashStep,
   isRbtStep,
   isTreeStep,
+  isDualArrayStep,
   type AlgorithmStep,
 } from "@/algorithms/types";
 
@@ -38,9 +40,11 @@ const PREVIEW_INPUTS: Record<string, number[]> = {
   "unordered-set": [5, 5, 1, 12, 0, 1, 25, 0, 1, 35, 0, 3, 25, 0, 0, 12, 0],
   "tree-map": [6, 1, 10, 5, 1, 20, 2, 1, 30, 9, 1, 25, 4, 3, 30, 0],
   "tree-set": [5, 1, 10, 0, 1, 20, 0, 1, 30, 0, 3, 25, 0],
-  "two-pointers": [10, 1, 3, 4, 6, 8, 9],
+  "two-pointers-converging": [10, 1, 3, 4, 6, 8, 9],
   "sliding-window": [3, 7, 2, 5, 1, 8],
   kadane: [-2, 1, -3, 4, -1, 2, 1],
+  "two-pointers-same-direction": [1, 1, 2, 3, 3, 4],
+  "two-pointers-two-arrays": [3, 1, 4, 6, 2, 5, 7],
 };
 
 function useInView<T extends HTMLElement>(rootMargin = "50px") {
@@ -152,6 +156,8 @@ export function MiniPreview({ slug }: { slug: string }) {
         <GridScene step={step} interactive={false} compact />
       ) : isGraphStep(step) ? (
         <GraphScene step={step} interactive={false} compact />
+      ) : isDualArrayStep(step) ? (
+        <DualArrayRow2D step={step} interactive={false} />
       ) : algorithm.meta.renderMode === "3d" ? (
         <BarsScene step={step} interactive={false} compact />
       ) : (

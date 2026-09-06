@@ -1,10 +1,8 @@
-"use client";
-
-import { useState, type ReactNode } from "react";
-import clsx from "clsx";
+import type { ReactNode } from "react";
 import type { AlgorithmMeta } from "@/algorithms/types";
+import { groupLabel } from "@/algorithms/catalogue";
 import { Footer } from "@/components/Footer";
-import Link from "next/link";
+import { BackButton, TheorySimTabs } from "@/components/LessonChrome";
 
 export function AlgorithmPageShell({
   meta,
@@ -15,26 +13,12 @@ export function AlgorithmPageShell({
   theory: ReactNode;
   simulation: ReactNode;
 }) {
-  const [tab, setTab] = useState<"theory" | "sim">("theory");
-
   return (
     <div className="mx-auto max-w-6xl px-4 md:px-6 py-8 flex flex-col gap-6">
-      <div className="flex justify-start">
-  <Link
-    href="/"
-    aria-label="Quay lại trang chủ"
-    className="control-btn !p2 flex items-center gap-1.5 text-xs"
-  >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M19 12H5" />
-      <path d="M12 19l-7-7 7-7" />
-    </svg>
-    
-  </Link>
-</div>
+      <BackButton />
       <header className="flex flex-col gap-2">
         <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-[var(--color-muted)] font-mono-tech">
-          <span>{meta.group}</span>
+          <span>{groupLabel(meta.group)}</span>
           <span>·</span>
           <span>{meta.level}</span>
           <span>·</span>
@@ -44,30 +28,7 @@ export function AlgorithmPageShell({
         <p className="text-[var(--color-muted)] max-w-2xl">{meta.summary}</p>
       </header>
 
-      <nav className="flex gap-1 border-b border-[var(--color-hairline)]">
-        {(
-          [
-            ["theory", "Lý thuyết & Ví dụ"],
-            ["sim", "Mô phỏng trực quan"],
-          ] as const
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setTab(key)}
-            className={clsx(
-              "px-4 py-2 text-sm font-mono-tech border-b-2 -mb-px transition-colors",
-              tab === key
-                ? "border-[var(--color-signal-amber)] text-[var(--color-signal-amber)]"
-                : "border-transparent text-[var(--color-muted)] hover:text-[var(--color-text)]"
-            )}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-
-      <div className={clsx(tab === "theory" ? "block" : "hidden")}>{theory}</div>
-      <div className={clsx(tab === "sim" ? "block" : "hidden")}>{simulation}</div>
+      <TheorySimTabs theory={theory} simulation={simulation} />
       <Footer />
     </div>
   );
