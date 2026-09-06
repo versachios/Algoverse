@@ -1,0 +1,35 @@
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Cả ba thuật toán dưới đây đều O(n²) và đều không cần thêm bộ nhớ (in-place) — điểm khác nhau nằm ở
+> cách chúng quyết định "phần tử nào đi vào vị trí nào tiếp theo".*
+
+## Ba cách tiếp cận sắp xếp cơ bản
+
+Chọn 1 trong 3 dạng con bên phải để xem mô phỏng và code cụ thể:
+
+### 1. Bubble Sort
+
+So sánh **hai phần tử liền kề**, đổi chỗ ngay nếu sai thứ tự. Sau mỗi lượt quét, phần tử lớn nhất
+"nổi" về đúng vị trí cuối. Đơn giản nhất để hình dung thao tác so sánh/đổi chỗ.
+
+### 2. Selection Sort
+
+Mỗi lượt, quét **toàn bộ phần chưa sắp xếp** để tìm phần tử nhỏ nhất, rồi mới đổi chỗ **đúng một lần**
+vào đầu vùng đó. Ít phép đổi chỗ hơn Bubble Sort, nhưng vẫn phải quét hết mỗi lượt dù mảng đã gần xong.
+
+### 3. Insertion Sort
+
+Xây dần một vùng đã sắp xếp ở đầu mảng: lấy phần tử tiếp theo, "chèn" nó vào đúng chỗ trong vùng đã
+sắp xếp bằng cách dịch chuyển các phần tử lớn hơn sang phải. Nhanh nhất trong ba thuật toán khi mảng
+đã gần sắp xếp sẵn.
+
+## So sánh nhanh
+
+<ComplexityTable
+  headers={["Thuật toán", "Thao tác chính", "Số lần đổi chỗ", "Tốt nhất khi"]}
+  rows={[
+    ["Bubble Sort", "So sánh 2 phần tử liền kề", "Nhiều", "Dạy khái niệm so sánh/đổi chỗ"],
+    ["Selection Sort", "Tìm min của phần còn lại", "Ít nhất (đúng n lần)", "Đổi chỗ tốn kém, ít bộ nhớ ghi"],
+    ["Insertion Sort", "Chèn vào vùng đã sắp xếp", "Trung bình", "Mảng đã gần sắp xếp / dữ liệu nhỏ"],
+  ]}
+/>

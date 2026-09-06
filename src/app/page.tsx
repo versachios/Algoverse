@@ -41,7 +41,7 @@ export default function Home() {
           “Nhìn thấy một thuật toán chạy, một lần, còn đọng lại lâu hơn cả mười lần đọc pseudocode.”
         </p>
         <div className="flex gap-2 pt-2">
-          <Link href="/algorithms/bubble-sort" className="control-btn !text-[var(--color-signal-amber)] !px-4 !py-2">
+          <Link href="/algorithms/sorting/bubble-sort" className="control-btn !text-[var(--color-signal-amber)] !px-4 !py-2">
             Xem Bubble Sort chạy →
           </Link>
           <a href="#chu-de" className="control-btn !px-4 !py-2">

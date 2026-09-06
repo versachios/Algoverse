@@ -29,7 +29,8 @@ export interface CatalogueEntry {
  *  internal identifier (used for routing/orbits) differ from the label shown
  *  on cards, so renaming what's shown never touches data/routing. */
 const GROUP_LABELS: Record<string, string> = {
-  "Two Pointers": "Kỹ thuật mảng",
+  "Two Pointers": "Array Techniques",
+  Sorting: "Array Techniques",
 };
 
 export function groupLabel(group: string): string {
@@ -50,9 +51,21 @@ export const catalogue: CatalogueEntry[] = [
   { slug: "segment-fenwick-tree", name: "Segment Tree / Fenwick Tree", group: "Tree", category: "Cấu trúc dữ liệu", level: "Olympiad", renderMode: "3d", ready: false },
 
   // ---- Giải thuật: Sắp xếp ----
-  { slug: "bubble-sort", name: "Bubble Sort", group: "Sorting", category: "Giải thuật", level: "Cơ bản", renderMode: "3d", ready: true },
-  { slug: "selection-sort", name: "Selection Sort", group: "Sorting", category: "Giải thuật", level: "Cơ bản", renderMode: "3d", ready: true },
-  { slug: "insertion-sort", name: "Insertion Sort", group: "Sorting", category: "Giải thuật", level: "Cơ bản", renderMode: "3d", ready: true },
+  {
+    slug: "sorting",
+    name: "Các kỹ thuật sort",
+    group: "Sorting",
+    category: "Giải thuật",
+    level: "Cơ bản",
+    renderMode: "3d",
+    ready: true,
+    previewSlug: "bubble-sort",
+    subLessons: [
+      { slug: "bubble-sort", name: "Bubble Sort", ready: true },
+      { slug: "selection-sort", name: "Selection Sort", ready: true },
+      { slug: "insertion-sort", name: "Insertion Sort", ready: true },
+    ],
+  },
   { slug: "quick-merge-heap-sort", name: "Quick / Merge / Heap Sort", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: false },
   { slug: "recursion-backtracking", name: "Recursion & Backtracking", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: false },
 
