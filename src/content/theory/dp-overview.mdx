@@ -1,0 +1,80 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Quy hoạch động (Dynamic Programming) không phải một thuật toán cụ thể — mà là một **kỹ thuật tối
+> ưu đệ quy**: nhận ra bài toán con lặp lại, lưu lại kết quả đã tính, và không bao giờ tính lại
+> lần thứ hai.*
+
+## DP khác đệ quy thường ở đâu?
+
+Đệ quy thường (brute-force recursion) chia bài toán lớn thành bài toán con, giải từng bài con bằng
+cách gọi lại chính nó — nhưng **không nhớ** kết quả đã tính. Nếu nhiều nhánh đệ quy cùng dẫn đến
+một bài toán con giống hệt nhau, bài con đó bị giải đi giải lại nhiều lần, khiến độ phức tạp thường
+nổ theo cấp số mũ (ví dụ Fibonacci đệ quy thường là O(2ⁿ)).
+
+Quy hoạch động vẫn dùng đúng cách chia bài toán đó, nhưng thêm một bước: **lưu (cache) kết quả bài
+con vào bảng/mảng** sau lần tính đầu tiên, và tra bảng thay vì tính lại ở những lần sau. Có 2 cách
+cài đặt:
+
+- **Top-down (Memoization)**: giữ nguyên code đệ quy, chỉ thêm bảng nhớ — trước khi tính, kiểm tra
+  bảng đã có kết quả chưa; sau khi tính, lưu lại rồi mới return.
+- **Bottom-up (Tabulation)**: bỏ đệ quy hoàn toàn, chủ động điền bảng từ trạng thái nhỏ nhất/đơn
+  giản nhất lên dần, đúng thứ tự sao cho khi điền một ô thì các ô nó phụ thuộc đã có sẵn giá trị.
+
+<ComplexityTable
+  headers={["Tiêu chí", "Đệ quy thường", "DP (memo/tabulation)"]}
+  rows={[
+    ["Bài toán con lặp lại", "Tính lại mỗi lần gặp", "Chỉ tính 1 lần, tra bảng các lần sau"],
+    ["Độ phức tạp điển hình", "O(2ⁿ) hoặc tệ hơn", "O(số trạng thái × chi phí 1 transition)"],
+    ["Cách cài đặt", "Hàm gọi đệ quy thuần", "Top-down + bảng nhớ, hoặc bottom-up điền bảng"],
+  ]}
+/>
+
+## Cách tìm công thức truy hồi (transition)
+
+Phần khó nhất của DP không phải là code — mà là định nghĩa đúng **trạng thái** và tìm ra **công
+thức truy hồi** nối trạng thái này với (các) trạng thái nhỏ hơn nó. Một quy trình thường dùng:
+
+1. **Định nghĩa trạng thái** — `dp[...]` đại diện cho điều gì? Càng ít chiều càng tốt, nhưng phải
+   đủ thông tin để không bị "quên" ràng buộc của bài toán (ví dụ Knapsack cần cả chỉ số món **và**
+   sức chứa còn lại, thiếu 1 trong 2 là sai).
+2. **Xác định các lựa chọn tại mỗi trạng thái** — ở bước này có thể làm gì? (LIS: có lấy phần tử
+   hiện tại nối vào dãy hay không; Knapsack: lấy hay không lấy món hiện tại).
+3. **Viết công thức truy hồi** — trạng thái hiện tại được tính từ trạng thái nào nhỏ hơn, ứng với
+   mỗi lựa chọn ở bước 2, rồi lấy tối ưu (max/min/tổng...) giữa các lựa chọn.
+4. **Xác định trạng thái cơ sở (base case)** — trạng thái nhỏ nhất không cần đệ quy nữa, thường ứng
+   với "chưa xét gì" hoặc "mảng rỗng".
+5. **Xác định thứ tự điền bảng** — nếu làm bottom-up, phải điền theo thứ tự sao cho mọi trạng thái
+   mà công thức truy hồi cần đến đã được tính trước đó.
+
+Cùng một quy trình 5 bước này áp dụng được cho mọi dạng DP bên phải — khác nhau chủ yếu ở việc
+trạng thái có mấy chiều, và công thức truy hồi cụ thể là gì.
+
+## Các dạng DP trong bài học này
+
+Chọn 1 trong 3 dạng con bên phải để xem lý thuyết chi tiết và mô phỏng từng ô của bảng dp:
+
+### 1. LIS — Dãy con tăng dài nhất
+
+Trạng thái 1 chiều `dp[i]`: độ dài LIS kết thúc đúng tại phần tử thứ i.
+
+### 2. LCS — Dãy con chung dài nhất
+
+Trạng thái 2 chiều `dp[i][j]`: độ dài LCS của i ký tự đầu dãy A và j ký tự đầu dãy B.
+
+### 3. 0/1 Knapsack
+
+Trạng thái 2 chiều `dp[i][w]`: giá trị lớn nhất khi chỉ xét i món đầu, sức chứa còn lại w.
+
+<Quiz
+  question="Nếu bỏ hẳn bảng nhớ và bảng dp đi, một lời giải quy hoạch động sẽ quay về giống với cách làm nào?"
+  options={[
+    "Sắp xếp (sorting)",
+    "Đệ quy thường, tính lại các bài toán con lặp lại",
+    "Tìm kiếm nhị phân",
+    "Duyệt đồ thị BFS",
+  ]}
+  answer={1}
+  correctNote="Đúng — DP chính là đệ quy thường cộng thêm việc lưu kết quả bài toán con đã tính."
+  incorrectNote="Chưa đúng — hãy nghĩ lại: nếu không lưu kết quả bài con, chương trình phải làm gì mỗi lần cần dùng lại nó?"
+/>

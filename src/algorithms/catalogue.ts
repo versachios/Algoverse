@@ -114,19 +114,19 @@ export const catalogue: CatalogueEntry[] = [
   { slug: "dijkstra", name: "Dijkstra (Đường đi ngắn nhất)", group: "Graph", category: "Giải thuật", level: "Olympiad", renderMode: "3d", ready: true },
 
   // ---- Giải thuật: Quy hoạch động ----
-  { slug: "knapsack", name: "0/1 Knapsack", group: "DP", category: "Giải thuật", level: "Olympiad", renderMode: "3d", ready: true },
   {
-    slug: "lcs-lis",
-    name: "DP: LCS / LIS",
+    slug: "dp",
+    name: "Quy hoạch động (DP)",
     group: "DP",
     category: "Giải thuật",
     level: "Olympiad",
     renderMode: "3d",
     ready: true,
-    previewSlug: "lcs",
+    previewSlug: "knapsack",
     subLessons: [
-      { slug: "lcs", name: "LCS — Dãy con chung dài nhất", ready: true },
       { slug: "lis", name: "LIS — Dãy con tăng dài nhất", ready: true },
+      { slug: "lcs", name: "LCS — Dãy con chung dài nhất", ready: true },
+      { slug: "knapsack", name: "0/1 Knapsack", ready: true },
     ],
   },
   { slug: "big-o-playground", name: "Big-O Playground", group: "DP", category: "Giải thuật", level: "Cơ bản", renderMode: "3d", ready: false },

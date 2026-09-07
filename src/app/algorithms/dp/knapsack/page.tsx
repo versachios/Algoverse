@@ -1,36 +1,36 @@
 import type { Metadata } from "next";
 import { catalogue } from "@/algorithms/catalogue";
-import { lcs } from "@/algorithms/lcs";
+import { knapsack } from "@/algorithms/knapsack";
 import { LessonGroupShell } from "@/components/LessonGroupShell";
 import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
-import TheoryContent from "@/content/theory/lcs.mdx";
+import TheoryContent from "@/content/theory/knapsack.mdx";
 
-const entry = catalogue.find((c) => c.slug === "lcs-lis")!;
+const entry = catalogue.find((c) => c.slug === "dp")!;
 
 export const metadata: Metadata = {
-  title: "LCS — Lý thuyết & Mô phỏng trực quan | Algoverse",
+  title: "0/1 Knapsack — Lý thuyết & Mô phỏng trực quan | Algoverse",
   description:
-    "Học bài toán dãy con chung dài nhất (LCS) qua lý thuyết, ví dụ chạy tay và mô phỏng 3D bảng dp[i][j] từng ô.",
+    "Học quy hoạch động qua bài toán cái túi 0/1: lý thuyết, ví dụ chạy tay và mô phỏng 3D bảng dp[i][w] từng ô.",
 };
 
-export default function LcsPage() {
+export default function KnapsackPage() {
   return (
     <LessonGroupShell
       group={entry.group}
       title={entry.name}
       summary={entry.name}
-      basePath="/algorithms/lcs-lis"
+      basePath="/algorithms/dp"
       subLessons={entry.subLessons ?? []}
-      activeSlug={lcs.meta.slug}
+      activeSlug={knapsack.meta.slug}
       theory={null}
       active={{
-        meta: lcs.meta,
+        meta: knapsack.meta,
         theory: (
           <div className="max-w-3xl">
             <TheoryContent />
           </div>
         ),
-        simulation: <AlgorithmWorkbench slug={lcs.meta.slug} />,
+        simulation: <AlgorithmWorkbench slug={knapsack.meta.slug} />,
       }}
     />
   );

@@ -5,7 +5,7 @@ import { LessonGroupShell } from "@/components/LessonGroupShell";
 import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/lis.mdx";
 
-const entry = catalogue.find((c) => c.slug === "lcs-lis")!;
+const entry = catalogue.find((c) => c.slug === "dp")!;
 
 export const metadata: Metadata = {
   title: "LIS — Lý thuyết & Mô phỏng trực quan | Algoverse",
@@ -19,7 +19,7 @@ export default function LisPage() {
       group={entry.group}
       title={entry.name}
       summary={entry.name}
-      basePath="/algorithms/lcs-lis"
+      basePath="/algorithms/dp"
       subLessons={entry.subLessons ?? []}
       activeSlug={lis.meta.slug}
       theory={null}
