@@ -20,6 +20,11 @@ import { twoPointersSameDirection } from "./two-pointers-same-direction";
 import { twoPointersTwoArrays } from "./two-pointers-two-arrays";
 import { slidingWindow } from "./sliding-window";
 import { kadane } from "./kadane";
+import { quickSort } from "./quick-sort";
+import { mergeSort } from "./merge-sort";
+import { heapSort } from "./heap-sort";
+import { lcs } from "./lcs";
+import { lis } from "./lis";
 import type { AlgorithmModule } from "./types";
 
 export const algorithmRegistry: Record<string, AlgorithmModule> = {
@@ -45,6 +50,11 @@ export const algorithmRegistry: Record<string, AlgorithmModule> = {
   "two-pointers-two-arrays": twoPointersTwoArrays,
   "sliding-window": slidingWindow,
   kadane,
+  "quick-sort": quickSort,
+  "merge-sort": mergeSort,
+  "heap-sort": heapSort,
+  lcs,
+  lis,
 };
 
 export function getAlgorithm(slug: string): AlgorithmModule {

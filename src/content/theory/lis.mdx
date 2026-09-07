@@ -1,0 +1,56 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *"Dài nhất kết thúc TẠI đây" là chìa khoá của mọi bài LIS — không phải "dài nhất tính đến đây",
+> vì hai khái niệm này khác nhau và chỉ cái đầu mới truy hồi được.*
+
+## Bài toán
+
+Cho một dãy số A gồm n phần tử, tìm độ dài dãy con **tăng dần** (không cần liên tục) dài nhất.
+
+## Ý tưởng
+
+Gọi dp[i] là độ dài LIS kết thúc **đúng tại** phần tử i (bắt buộc dùng a[i] làm phần tử cuối).
+Với mỗi i, xét mọi j < i: nếu a[j] < a[i], có thể "nối" a[i] vào sau dãy con kết thúc tại j, được
+độ dài dp[j] + 1. Lấy giá trị lớn nhất trong các ứng viên đó:
+
+`dp[i] = max(1, max(dp[j] + 1 với mọi j < i và a[j] < a[i]))`
+
+Đáp án cuối cùng là max(dp[0..n-1]) — không nhất thiết là dp[n-1], vì LIS có thể kết thúc ở giữa dãy.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Cách làm", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["DP cơ bản (như trên)", "O(n²)", "Với mỗi i, quét lại toàn bộ j < i"],
+    ["DP + binary search", "O(n log n)", "Duy trì mảng 'đuôi nhỏ nhất' cho mỗi độ dài, tối ưu ở thi HSGQG"],
+  ]}
+/>
+
+## Ví dụ chạy tay
+
+Dãy `[3, 1, 4, 1, 5, 9, 2, 6]`:
+
+- dp[0]=1 (chỉ có 3). dp[1]=1 (chỉ có 1, vì 3 ≥ 1 không nối được).
+- dp[2]: a[2]=4, các j < 2 thoả a[j] < 4 là j=0 (giá trị 3) và j=1 (giá trị 1) → dp[2] = max(dp[0], dp[1]) + 1 = 2.
+- ... tiếp tục, kết quả cuối: max(dp) = 4, ví dụ dãy con `[1, 4, 5, 9]` hoặc `[1, 1, 2, 6]`.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bài toán "xếp hộp lồng nhau" (mỗi hộp chỉ đặt vừa hộp lớn hơn cả hai chiều) quy về LIS trên một
+  chiều sau khi sắp xếp theo chiều còn lại.
+- Bài toán tìm số lượng phần tử tối thiểu cần xoá để mảng trở thành không giảm — chính là n - LIS(A).
+
+<Quiz
+  question="dp[i] trong bài toán LIS được định nghĩa là gì?"
+  options={[
+    "Độ dài LIS tính trong toàn bộ dãy A[0..i]",
+    "Độ dài LIS kết thúc đúng tại phần tử a[i]",
+    "Giá trị lớn nhất trong dãy con tăng tính đến i",
+    "Số lượng phần tử nhỏ hơn a[i] đứng trước nó"
+  ]}
+  answer={1}
+  correctNote="Chính xác — bắt buộc dùng a[i] làm phần tử cuối cùng, đó là điều kiện giúp công thức truy hồi hoạt động đúng."
+  incorrectNote="Chưa đúng — nếu dp[i] chỉ là 'LIS trong đoạn đầu tới i' thì sẽ không truy hồi được dp[i] từ dp[j]."
+/>

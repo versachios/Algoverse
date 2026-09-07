@@ -57,6 +57,12 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   "two-pointers-same-direction": [1, 1, 2, 2, 2, 3, 5, 5, 6],
   // Two pointers, two arrays: [n1, a..., b...] — both sorted ascending.
   "two-pointers-two-arrays": [4, 1, 3, 5, 7, 2, 4, 6, 8, 9],
+  "quick-sort": [6, 2, 9, 4, 1, 7, 3],
+  "merge-sort": [6, 2, 9, 4, 1, 7, 3],
+  "heap-sort": [6, 2, 9, 4, 1, 7, 3],
+  // LCS: [n1, A..., B...] — same convention as two-pointers-two-arrays.
+  lcs: [6, 3, 1, 4, 1, 5, 9, 3, 4, 5, 9, 2],
+  lis: [3, 1, 4, 1, 5, 9, 2, 6],
 };
 
 /**
@@ -159,6 +165,15 @@ const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
     { label: "Mảng a", fixed: 0 },
   ],
   kadane: [{ label: "Mảng a (có thể gồm số âm)", fixed: 0 }],
+  "quick-sort": [{ label: "Mảng a", fixed: 0 }],
+  "merge-sort": [{ label: "Mảng a", fixed: 0 }],
+  "heap-sort": [{ label: "Mảng a", fixed: 0 }],
+  lcs: [
+    { label: "n1 — số phần tử dãy A", fixed: 1 },
+    { label: "Dãy A", fixed: 0, countFromPrevious: true },
+    { label: "Dãy B", fixed: 0 },
+  ],
+  lis: [{ label: "Dãy a", fixed: 0 }],
 };
 const FALLBACK_FIELDS: InputFieldSpec[] = [{ label: "Mảng a", fixed: 0 }];
 

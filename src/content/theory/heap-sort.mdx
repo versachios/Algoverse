@@ -1,0 +1,62 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Một mảng có thể "giả vờ" là một cây nhị phân hoàn chỉnh: phần tử tại chỉ số i có con trái tại
+> 2i+1, con phải tại 2i+2. Heap Sort tận dụng đúng mẹo đó, không cần con trỏ hay bộ nhớ phụ nào.*
+
+## Bài toán
+
+Sắp xếp một mảng số nguyên tăng dần, đảm bảo O(n log n) xấu nhất **và** sắp xếp tại chỗ (không như
+Merge Sort cần O(n) bộ nhớ phụ).
+
+## Ý tưởng của Heap Sort
+
+**Bước 1 — Xây max-heap:** biến mảng thành một max-heap (mọi nút cha ≥ hai nút con), bằng cách gọi
+`heapify` (sift-down) từ nút cha cuối cùng ngược lên gốc.
+
+**Bước 2 — Rút phần tử lớn nhất:** gốc heap (a[0]) luôn là phần tử lớn nhất. Đổi chỗ nó với phần tử
+cuối mảng (đưa về đúng vị trí sắp xếp), thu nhỏ heap đi 1, rồi `heapify` lại gốc để khôi phục tính
+chất heap. Lặp lại cho đến khi heap chỉ còn 1 phần tử.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Mọi trường hợp", "O(n log n)", "Xây heap O(n), n lần rút phần tử mỗi lần O(log n)"],
+    ["Không gian", "O(1)", "Sắp xếp tại chỗ, không cần mảng phụ"],
+  ]}
+/>
+
+So với Merge Sort, Heap Sort không cần bộ nhớ phụ nhưng **không ổn định** (không giữ thứ tự tương
+đối của các phần tử bằng nhau) và trong thực tế thường chậm hơn Quick Sort do truy cập bộ nhớ kém
+liên tục hơn (nhảy giữa các chỉ số 2i+1, 2i+2).
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]` (0-indexed, cha của i là (i-1)/2):
+
+1. Xây heap: `heapify` từ nút n/2 - 1 = 1 ngược về 0 → được max-heap `[9, 4, 6, 2]`.
+2. Đổi a[0]=9 với a[3]=2 → `[2, 4, 6, 9]`, heapify phần `[2, 4, 6]` → `[6, 4, 2, 9]`.
+3. Đổi a[0]=6 với a[2]=2 → `[2, 4, 6, 9]`, heapify phần `[2, 4]` → `[4, 2, 6, 9]`.
+4. Đổi a[0]=4 với a[1]=2 → `[2, 4, 6, 9]`. Kết quả cuối: `[2, 4, 6, 9]`.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Cài đặt trực tiếp `priority_queue` — bản thân STL `priority_queue` của C++ chính là một binary
+  heap cài trên mảng, giống hệt cấu trúc dùng trong Heap Sort.
+- Bài toán "tìm k phần tử lớn nhất/nhỏ nhất" khi không muốn sắp xếp toàn bộ mảng: chỉ cần xây heap
+  rồi rút ra k lần, O(n + k log n) thay vì O(n log n) sắp xếp toàn bộ.
+
+<Quiz
+  question="Trong mảng biểu diễn heap 0-indexed, con trái và con phải của nút i là gì?"
+  options={[
+    "i-1 và i+1",
+    "2i và 2i+1",
+    "2i+1 và 2i+2",
+    "i/2 và i/2 + 1"
+  ]}
+  answer={2}
+  correctNote="Chính xác — đây là công thức chuẩn cho binary heap biểu diễn bằng mảng 0-indexed."
+  incorrectNote="Chưa đúng — thử áp công thức vào nút gốc i=0 xem con của nó nằm ở chỉ số nào."
+/>

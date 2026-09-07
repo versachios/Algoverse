@@ -1,0 +1,58 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Trộn hai dãy đã sắp xếp thành một dãy sắp xếp chỉ tốn O(n) — đó là "viên gạch" duy nhất mà
+> Merge Sort cần, lặp lại nó theo kiểu chia để trị là xong.*
+
+## Bài toán
+
+Sắp xếp một mảng số nguyên tăng dần, đảm bảo O(n log n) trong **mọi** trường hợp (khác Quick Sort).
+
+## Ý tưởng của Merge Sort
+
+Nếu một mảng chỉ có 1 phần tử, nó đã "sắp xếp xong". Chia mảng làm đôi, đệ quy sắp xếp từng nửa,
+rồi **trộn (merge)** hai nửa đã sắp xếp lại thành một mảng sắp xếp duy nhất: dùng hai con trỏ, mỗi
+bước lấy phần tử nhỏ hơn giữa hai đầu, đẩy vào mảng tạm, cho đến khi hết cả hai nửa.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Mọi trường hợp", "O(n log n)", "log n lượt chia, mỗi lượt trộn tốn O(n)"],
+    ["Không gian", "O(n)", "Cần mảng tạm để trộn — không sắp xếp tại chỗ"],
+  ]}
+/>
+
+Vì luôn ổn định O(n log n) và **ổn định** (stable — giữ nguyên thứ tự tương đối của các phần tử
+bằng nhau), Merge Sort là lựa chọn khi cần độ phức tạp đảm bảo hoặc khi cần tính ổn định (ví dụ
+sắp xếp học sinh theo điểm nhưng vẫn giữ thứ tự theo tên ban đầu).
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]`:
+
+1. Chia đôi: `[6, 2]` và `[9, 4]`.
+2. Chia tiếp: `[6]`, `[2]`, `[9]`, `[4]` — mỗi mảng 1 phần tử, coi như đã sắp xếp.
+3. Trộn `[6]` và `[2]` → `[2, 6]`. Trộn `[9]` và `[4]` → `[4, 9]`.
+4. Trộn `[2, 6]` và `[4, 9]`: so 2&4→lấy 2, so 6&4→lấy 4, so 6&9→lấy 6, còn lại lấy 9 → `[2, 4, 6, 9]`.
+
+## Ứng dụng / dạng bài hay gặp
+
+- Đếm số cặp nghịch thế (inversion count) trong mảng: chỉ cần đếm thêm trong bước trộn, tận dụng
+  luôn Merge Sort có sẵn — độ phức tạp O(n log n) thay vì O(n²) nếu đếm trực tiếp.
+- Sắp xếp danh sách liên kết (linked list): Merge Sort tự nhiên hơn Quick Sort vì không cần truy
+  cập ngẫu nhiên theo chỉ số.
+
+<Quiz
+  question="Vì sao Merge Sort cần thêm O(n) bộ nhớ phụ trong khi Quick Sort/Heap Sort thì không?"
+  options={[
+    "Vì Merge Sort dùng đệ quy còn hai thuật toán kia thì không",
+    "Vì bước trộn (merge) cần một mảng tạm để gộp hai đoạn đã sắp xếp trước khi ghi lại vào mảng gốc",
+    "Vì Merge Sort phải lưu lại toàn bộ các bước trung gian để hiển thị",
+    "Vì Merge Sort không sắp xếp tại chỗ được với mảng có phần tử trùng nhau"
+  ]}
+  answer={1}
+  correctNote="Chính xác — không thể trộn hai đoạn liền kề của cùng một mảng mà không ghi đè dữ liệu chưa dùng tới, nên cần vùng nhớ tạm."
+  incorrectNote="Chưa đúng — nghĩ về việc thao tác 'trộn' hai đoạn thực chất diễn ra ở đâu."
+/>

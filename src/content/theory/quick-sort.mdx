@@ -1,0 +1,60 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Ý tưởng cốt lõi: nếu biết cách đặt đúng MỘT phần tử vào đúng vị trí cuối cùng của nó (so với các
+> phần tử khác), thì phần còn lại tự chia thành hai bài toán con nhỏ hơn — đó là chia để trị.*
+
+## Bài toán
+
+Cho một mảng số nguyên, sắp xếp lại thành thứ tự tăng dần, nhanh hơn các thuật toán O(n²) như
+Bubble/Selection/Insertion Sort.
+
+## Ý tưởng của Quick Sort
+
+Chọn một phần tử làm **pivot** (ở đây chọn phần tử cuối đoạn). "Phân hoạch" (partition) đoạn mảng:
+duyệt qua, mọi phần tử nhỏ hơn pivot được dồn về bên trái, phần tử lớn hơn/bằng ở bên phải, rồi đặt
+pivot vào đúng ranh giới giữa hai vùng. Sau bước này, pivot đã ở **đúng vị trí cuối cùng** của nó
+trong mảng đã sắp xếp — không cần động vào nữa. Đệ quy làm tiếp với đoạn bên trái và đoạn bên phải.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Trường hợp", "Thời gian", "Ghi chú"]}
+  rows={[
+    ["Trung bình", "O(n log n)", "Pivot chia mảng khá cân bằng mỗi lần"],
+    ["Xấu nhất", "O(n²)", "Mảng đã sắp xếp/ngược, luôn chọn pivot là phần tử nhỏ nhất hoặc lớn nhất"],
+    ["Không gian", "O(log n)", "Ngăn xếp đệ quy (trung bình); sắp xếp tại chỗ"],
+  ]}
+/>
+
+Trong thi đấu, tránh trường hợp xấu nhất bằng cách chọn pivot ngẫu nhiên hoặc lấy trung vị của 3
+phần tử (đầu, giữa, cuối) thay vì luôn lấy phần tử cuối.
+
+## Ví dụ chạy tay
+
+Mảng `[6, 2, 9, 4]`, pivot = phần tử cuối = `4`:
+
+1. Duyệt: 6 ≥ 4 (giữ nguyên vùng phải), 2 < 4 (đổi vào vùng trái, i=0), 9 ≥ 4 (giữ nguyên).
+2. Đổi pivot vào vị trí i+1 = 1 → `[2, 4, 9, 6]`. Pivot `4` đã đúng vị trí cuối cùng.
+3. Đệ quy tiếp với `[2]` (đã xong) và `[9, 6]` → phân hoạch tiếp cho ra `[6, 9]`.
+4. Kết quả: `[2, 4, 6, 9]`.
+
+## Ứng dụng / dạng bài hay gặp
+
+- `sort()` mặc định của C++ dùng Introsort (lai Quick Sort + Heap Sort) — hiểu Quick Sort giúp lý
+  giải vì sao STL sort trung bình rất nhanh.
+- Bài toán "tìm phần tử lớn thứ k" (Quickselect) là biến thể chỉ đệ quy một nhánh của Quick Sort,
+  độ phức tạp trung bình O(n).
+
+<Quiz
+  question="Quick Sort đạt độ phức tạp xấu nhất O(n²) khi nào?"
+  options={[
+    "Khi mảng có nhiều phần tử trùng nhau",
+    "Khi pivot luôn chia mảng thành hai nửa gần bằng nhau",
+    "Khi pivot luôn là phần tử nhỏ nhất hoặc lớn nhất của đoạn đang xét",
+    "Khi mảng đã được đảo ngẫu nhiên"
+  ]}
+  answer={2}
+  correctNote="Chính xác — mỗi lần phân hoạch chỉ tách ra 1 phần tử, đệ quy còn lại n-1 phần tử → giống Bubble Sort."
+  incorrectNote="Chưa đúng — nghĩ về trường hợp phân hoạch mất cân bằng nhất có thể."
+/>

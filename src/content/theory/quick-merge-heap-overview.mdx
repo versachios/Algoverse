@@ -1,0 +1,40 @@
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *O(n²) chỉ đủ dùng cho bài tập nhập môn. Ba thuật toán này là mức "phải biết" để làm bài thi
+> tuyển sinh 10 chuyên Tin và các đề thi lập trình có ràng buộc n lớn (10⁵ – 10⁶).*
+
+## Ba cách đạt O(n log n)
+
+Chọn 1 trong 3 dạng con bên phải để xem mô phỏng và code cụ thể:
+
+### 1. Quick Sort
+
+Chọn một **pivot**, phân hoạch (partition) mảng thành hai vùng: nhỏ hơn pivot và lớn hơn/bằng pivot,
+rồi đệ quy lên từng vùng. Nhanh trong thực tế, sắp xếp tại chỗ, nhưng xấu nhất vẫn O(n²) nếu chọn
+pivot tệ (mảng đã sắp xếp sẵn + luôn chọn phần tử cuối).
+
+### 2. Merge Sort
+
+Chia mảng làm đôi liên tục đến khi còn 1 phần tử, rồi **trộn (merge)** từng cặp đoạn đã sắp xếp lại
+với nhau. Luôn O(n log n) dù dữ liệu đầu vào thế nào, ổn định (stable), nhưng cần thêm O(n) bộ nhớ phụ.
+
+### 3. Heap Sort
+
+Xây một **max-heap** trên chính mảng (cây nhị phân ẩn bên trong mảng, không cần con trỏ), rồi lặp lại
+việc lấy phần tử lớn nhất (gốc heap) ra cuối mảng và sift-down lại phần còn lại. Luôn O(n log n),
+sắp xếp tại chỗ, không cần bộ nhớ phụ như Merge Sort.
+
+## So sánh nhanh
+
+<ComplexityTable
+  headers={["Thuật toán", "Trung bình", "Xấu nhất", "Bộ nhớ phụ", "Ổn định?"]}
+  rows={[
+    ["Quick Sort", "O(n log n)", "O(n²)", "O(log n)", "Không"],
+    ["Merge Sort", "O(n log n)", "O(n log n)", "O(n)", "Có"],
+    ["Heap Sort", "O(n log n)", "O(n log n)", "O(1)", "Không"],
+  ]}
+/>
+
+Trong đề thi tuyển sinh 10 và thi HSG, `sort()` của C++ (thường triển khai lai Quick Sort + Heap Sort,
+gọi là Introsort) đã đủ dùng trong hầu hết trường hợp — nhưng hiểu rõ cả ba thuật toán này giúp trả lời
+đúng các câu hỏi lý thuyết về độ phức tạp, tính ổn định, và giúp cài đặt tay khi đề bài yêu cầu.

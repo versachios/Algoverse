@@ -66,7 +66,21 @@ export const catalogue: CatalogueEntry[] = [
       { slug: "insertion-sort", name: "Insertion Sort", ready: true },
     ],
   },
-  { slug: "quick-merge-heap-sort", name: "Quick / Merge / Heap Sort", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: false },
+  {
+    slug: "quick-merge-heap-sort",
+    name: "Quick / Merge / Heap Sort",
+    group: "Sorting",
+    category: "Giải thuật",
+    level: "Cấp 2 - Cấp 3",
+    renderMode: "3d",
+    ready: true,
+    previewSlug: "quick-sort",
+    subLessons: [
+      { slug: "quick-sort", name: "Quick Sort", ready: true },
+      { slug: "merge-sort", name: "Merge Sort", ready: true },
+      { slug: "heap-sort", name: "Heap Sort", ready: true },
+    ],
+  },
   { slug: "recursion-backtracking", name: "Recursion & Backtracking", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: false },
 
   // ---- Giải thuật: Tìm kiếm ----
@@ -101,7 +115,20 @@ export const catalogue: CatalogueEntry[] = [
 
   // ---- Giải thuật: Quy hoạch động ----
   { slug: "knapsack", name: "0/1 Knapsack", group: "DP", category: "Giải thuật", level: "Olympiad", renderMode: "3d", ready: true },
-  { slug: "lcs-lis", name: "DP: LCS / LIS", group: "DP", category: "Giải thuật", level: "Olympiad", renderMode: "3d", ready: false },
+  {
+    slug: "lcs-lis",
+    name: "DP: LCS / LIS",
+    group: "DP",
+    category: "Giải thuật",
+    level: "Olympiad",
+    renderMode: "3d",
+    ready: true,
+    previewSlug: "lcs",
+    subLessons: [
+      { slug: "lcs", name: "LCS — Dãy con chung dài nhất", ready: true },
+      { slug: "lis", name: "LIS — Dãy con tăng dài nhất", ready: true },
+    ],
+  },
   { slug: "big-o-playground", name: "Big-O Playground", group: "DP", category: "Giải thuật", level: "Cơ bản", renderMode: "3d", ready: false },
 ];
 
