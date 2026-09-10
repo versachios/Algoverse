@@ -25,6 +25,8 @@ import { mergeSort } from "./merge-sort";
 import { heapSort } from "./heap-sort";
 import { lcs } from "./lcs";
 import { lis } from "./lis";
+import { bitmaskDp } from "./bitmask-dp";
+import { treeDp } from "./tree-dp";
 import type { AlgorithmModule } from "./types";
 
 export const algorithmRegistry: Record<string, AlgorithmModule> = {
@@ -55,6 +57,8 @@ export const algorithmRegistry: Record<string, AlgorithmModule> = {
   "heap-sort": heapSort,
   lcs,
   lis,
+  "bitmask-dp": bitmaskDp,
+  "tree-dp": treeDp,
 };
 
 export function getAlgorithm(slug: string): AlgorithmModule {

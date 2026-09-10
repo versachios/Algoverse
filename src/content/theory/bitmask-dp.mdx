@@ -1,0 +1,57 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Bitmask DP dùng khi trạng thái bài toán là "tập con nào đã được xử lý", và n đủ nhỏ (thường ≤ 20)
+> để biểu diễn tập con đó bằng các bit của một số nguyên.*
+
+## Bài toán
+
+Có n thợ và n việc, `cost[i][j]` là chi phí nếu thợ i làm việc j. Gán mỗi thợ đúng 1 việc (và mỗi
+việc chỉ 1 thợ) sao cho tổng chi phí nhỏ nhất — đây là **Bài toán phân công** (Assignment Problem).
+
+Thử toàn bộ n! cách ghép cặp là quá chậm. Nhận xét: khi xét thợ theo thứ tự 0, 1, 2, ..., trạng thái
+cần nhớ không phải "đã dùng việc nào" theo danh sách, mà chỉ cần **tập việc nào đã dùng** — vừa vặn
+biểu diễn bằng 1 số nguyên `mask` có n bit, bit j bật nghĩa là việc j đã có người làm.
+
+## Ý tưởng quy hoạch động
+
+Định nghĩa `dp[i][mask]` = chi phí nhỏ nhất khi đã gán xong **i thợ đầu tiên** cho đúng i việc trong
+tập `mask` (nên `mask` chỉ hợp lệ khi có đúng i bit bật). Với thợ thứ i, thử gán cho từng việc `j`
+chưa dùng trong `mask`:
+
+```
+dp[i + 1][mask | (1 << j)] = min(dp[i + 1][mask | (1 << j)], dp[i][mask] + cost[i][j])
+```
+
+Đáp án cuối cùng là `dp[n][(1 << n) - 1]` — mask đầy đủ n bit, nghĩa là tất cả việc đã có người làm.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n² × 2ⁿ)", "n hàng, 2ⁿ mask mỗi hàng, thử n việc mỗi mask"],
+    ["Không gian", "O(n × 2ⁿ)", "Có thể nén còn O(2ⁿ) vì hàng i chỉ cần hàng i-1"],
+    ["So với brute-force", "O(n!) → O(n² × 2ⁿ)", "Vẫn hàm mũ, nhưng dùng được tới n ≈ 18-20"],
+  ]}
+/>
+
+## Ứng dụng / dạng bài hay gặp
+
+- Bài toán người bán hàng (TSP): `dp[mask][v]` = quãng đường ngắn nhất thăm hết tập `mask`, đang ở
+  đỉnh `v` — cùng tư tưởng, thêm 1 chiều "đang đứng ở đâu".
+- Đếm/tối ưu trên tập con: SOS DP (Sum over Subsets), ghép cặp trọng số nhỏ nhất/lớn nhất.
+- Điều kiện nhận biết: n nhỏ (≤ 20) và trạng thái tự nhiên là "tập con nào đã dùng/đã chọn".
+
+<Quiz
+  question="Vì sao Bitmask DP chỉ khả thi khi n nhỏ (thường ≤ 20)?"
+  options={[
+    "Vì C++ không hỗ trợ số nguyên lớn hơn",
+    "Vì số lượng mask có thể là 2ⁿ, tăng theo cấp số mũ",
+    "Vì thuật toán chỉ đúng với n chẵn",
+    "Vì mỗi mask cần một mảng chi phí riêng",
+  ]}
+  answer={1}
+  correctNote="Đúng — bảng dp có 2ⁿ cột, nên n=20 đã là ~1 triệu cột; n=30 sẽ vượt quá bộ nhớ."
+  incorrectNote="Chưa đúng — nhìn lại kích thước bảng dp[i][mask]: mask chạy từ 0 đến 2ⁿ-1."
+/>

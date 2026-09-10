@@ -5,7 +5,7 @@ import { LessonGroupShell } from "@/components/LessonGroupShell";
 import { AlgorithmWorkbench } from "@/components/AlgorithmWorkbench";
 import TheoryContent from "@/content/theory/quick-sort.mdx";
 
-const entry = catalogue.find((c) => c.slug === "quick-merge-heap-sort")!;
+const entry = catalogue.find((c) => c.slug === "sorting")!;
 
 export const metadata: Metadata = {
   title: "Quick Sort — Lý thuyết & Mô phỏng trực quan | Algoverse",
@@ -19,7 +19,7 @@ export default function QuickSortPage() {
       group={entry.group}
       title={entry.name}
       summary={entry.name}
-      basePath="/algorithms/quick-merge-heap-sort"
+      basePath="/algorithms/sorting"
       subLessons={entry.subLessons ?? []}
       activeSlug={quickSort.meta.slug}
       theory={null}

@@ -1,0 +1,58 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *DP trên cây giống DP thường, chỉ khác "thứ tự điền bảng": thay vì theo chỉ số tăng dần, ta điền
+> theo cấu trúc cây — con xong trước, cha xong sau.*
+
+## Bài toán
+
+Cho một cây, mỗi nút có 1 trọng số. Chọn tập con các nút sao cho **không có 2 nút nào là cha-con của
+nhau**, và tổng trọng số các nút được chọn lớn nhất — đây là bài **Tập độc lập trọng số lớn nhất trên
+cây** (Maximum Weight Independent Set on a Tree).
+
+Với mảng thường, ta có thứ tự trái-phải rõ ràng để điền dp. Với cây, thứ tự đúng là **hậu duyệt**
+(post-order): xử lý xong tất cả con rồi mới xử lý đến nút cha, vì kết quả ở nút cha phụ thuộc trực
+tiếp vào kết quả đã tính ở các con.
+
+## Ý tưởng quy hoạch động
+
+Với mỗi nút `v`, giữ 2 trạng thái:
+
+- `dp0[v]` — tổng trọng số lớn nhất trong cây con gốc `v`, **không chọn** `v`. Khi đó mỗi con `c`
+  được tự do chọn hoặc không: `dp0[v] = Σ max(dp0[c], dp1[c])`.
+- `dp1[v]` — tổng trọng số lớn nhất trong cây con gốc `v`, **có chọn** `v`. Khi đó mọi con đều bị cấm
+  chọn: `dp1[v] = w[v] + Σ dp0[c]`.
+
+Đáp án cuối cùng là `max(dp0[gốc], dp1[gốc])`. Truy vết ngược từ gốc xuống (nếu `dp1[v] ≥ dp0[v]`
+thì chọn `v` và ép 2 con không được chọn) để biết chính xác tập nút nào được chọn.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Thời gian", "O(n)", "Mỗi nút và mỗi cạnh chỉ được xét đúng 1 lần khi hậu duyệt"],
+    ["Không gian", "O(n)", "2 mảng dp0, dp1 kích thước n, cộng ngăn xếp đệ quy O(chiều cao cây)"],
+    ["So với brute-force", "O(2ⁿ) → O(n)", "Thử mọi tập con là hàm mũ; DP trên cây là tuyến tính"],
+  ]}
+/>
+
+## Ứng dụng / dạng bài hay gặp
+
+- Đường kính cây (Tree Diameter), đường đi dài nhất qua 1 nút.
+- Số lượng đường phủ tối thiểu / cây bao trùm có ràng buộc (Minimum Vertex Cover trên cây).
+- Bất kỳ bài nào có cấu trúc "chọn/không chọn nút này ảnh hưởng đến các con trực tiếp" — dấu hiệu
+  chung của các bài DP trên cây.
+
+<Quiz
+  question="Vì sao dp0[v] cộng max(dp0[c], dp1[c]) nhưng dp1[v] chỉ cộng dp0[c] (không có lựa chọn dp1[c])?"
+  options={[
+    "Vì dp1[c] luôn nhỏ hơn dp0[c] nên không cần xét",
+    "Vì nếu chọn v thì con c không được chọn (2 nút kề nhau vi phạm điều kiện)",
+    "Vì dp0[c] luôn được tính trước dp1[c]",
+    "Đó chỉ là quy ước ký hiệu, không ảnh hưởng kết quả",
+  ]}
+  answer={1}
+  correctNote="Đúng — điều kiện bài toán cấm 2 nút cha-con cùng được chọn, nên chọn v buộc mọi con dùng trạng thái không-chọn."
+  incorrectNote="Chưa đúng — nhìn lại điều kiện của bài: không được chọn 2 nút kề nhau (cha-con)."
+/>

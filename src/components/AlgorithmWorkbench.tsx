@@ -63,6 +63,10 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   // LCS: [n1, A..., B...] — same convention as two-pointers-two-arrays.
   lcs: [6, 3, 1, 4, 1, 5, 9, 3, 4, 5, 9, 2],
   lis: [3, 1, 4, 1, 5, 9, 2, 6],
+  // Bitmask DP (assignment problem): [n, cost row-major n×n]
+  "bitmask-dp": [4, 9, 2, 7, 8, 6, 4, 3, 7, 5, 8, 1, 8, 7, 6, 9, 4],
+  // Tree DP: array-indexed complete binary tree of weights (node i's children are 2i+1, 2i+2)
+  "tree-dp": [5, 3, 8, 2, 4, 1, 6, 9],
 };
 
 /**
@@ -174,6 +178,11 @@ const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
     { label: "Dãy B", fixed: 0 },
   ],
   lis: [{ label: "Dãy a", fixed: 0 }],
+  "bitmask-dp": [
+    { label: "n — số thợ / số việc", fixed: 1 },
+    { label: "Ma trận chi phí n×n (theo hàng)", fixed: 0 },
+  ],
+  "tree-dp": [{ label: "Trọng số các nút (thứ tự mảng, chỉ số 0 = gốc)", fixed: 0 }],
 };
 const FALLBACK_FIELDS: InputFieldSpec[] = [{ label: "Mảng a", fixed: 0 }];
 

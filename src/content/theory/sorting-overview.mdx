@@ -1,11 +1,11 @@
 import { ComplexityTable } from "@/components/ComplexityTable";
 
-> *Cả ba thuật toán dưới đây đều O(n²) và đều không cần thêm bộ nhớ (in-place) — điểm khác nhau nằm ở
-> cách chúng quyết định "phần tử nào đi vào vị trí nào tiếp theo".*
+> *3 thuật toán đầu là O(n²), dễ hình dung nhưng chậm với n lớn. 3 thuật toán sau đạt O(n log n) —
+> mức "phải biết" cho thi tuyển sinh 10 chuyên Tin và các đề có ràng buộc n lớn (10⁵ – 10⁶).*
 
-## Ba cách tiếp cận sắp xếp cơ bản
+## Nhóm cơ bản — O(n²)
 
-Chọn 1 trong 3 dạng con bên phải để xem mô phỏng và code cụ thể:
+Chọn 1 trong 6 dạng con bên phải để xem mô phỏng và code cụ thể.
 
 ### 1. Bubble Sort
 
@@ -23,13 +23,39 @@ Xây dần một vùng đã sắp xếp ở đầu mảng: lấy phần tử ti�
 sắp xếp bằng cách dịch chuyển các phần tử lớn hơn sang phải. Nhanh nhất trong ba thuật toán khi mảng
 đã gần sắp xếp sẵn.
 
+## Nhóm nâng cao — O(n log n)
+
+### 4. Quick Sort
+
+Chọn một **pivot**, phân hoạch (partition) mảng thành hai vùng: nhỏ hơn pivot và lớn hơn/bằng pivot,
+rồi đệ quy lên từng vùng. Nhanh trong thực tế, sắp xếp tại chỗ, nhưng xấu nhất vẫn O(n²) nếu chọn
+pivot tệ (mảng đã sắp xếp sẵn + luôn chọn phần tử cuối).
+
+### 5. Merge Sort
+
+Chia mảng làm đôi liên tục đến khi còn 1 phần tử, rồi **trộn (merge)** từng cặp đoạn đã sắp xếp lại
+với nhau. Luôn O(n log n) dù dữ liệu đầu vào thế nào, ổn định (stable), nhưng cần thêm O(n) bộ nhớ phụ.
+
+### 6. Heap Sort
+
+Xây một **max-heap** trên chính mảng (cây nhị phân ẩn bên trong mảng, không cần con trỏ), rồi lặp lại
+việc lấy phần tử lớn nhất (gốc heap) ra cuối mảng và sift-down lại phần còn lại. Luôn O(n log n),
+sắp xếp tại chỗ, không cần bộ nhớ phụ như Merge Sort.
+
 ## So sánh nhanh
 
 <ComplexityTable
-  headers={["Thuật toán", "Thao tác chính", "Số lần đổi chỗ", "Tốt nhất khi"]}
+  headers={["Thuật toán", "Trung bình", "Xấu nhất", "Bộ nhớ phụ", "Ổn định?"]}
   rows={[
-    ["Bubble Sort", "So sánh 2 phần tử liền kề", "Nhiều", "Dạy khái niệm so sánh/đổi chỗ"],
-    ["Selection Sort", "Tìm min của phần còn lại", "Ít nhất (đúng n lần)", "Đổi chỗ tốn kém, ít bộ nhớ ghi"],
-    ["Insertion Sort", "Chèn vào vùng đã sắp xếp", "Trung bình", "Mảng đã gần sắp xếp / dữ liệu nhỏ"],
+    ["Bubble Sort", "O(n²)", "O(n²)", "O(1)", "Có"],
+    ["Selection Sort", "O(n²)", "O(n²)", "O(1)", "Không"],
+    ["Insertion Sort", "O(n²)", "O(n²)", "O(1)", "Có"],
+    ["Quick Sort", "O(n log n)", "O(n²)", "O(log n)", "Không"],
+    ["Merge Sort", "O(n log n)", "O(n log n)", "O(n)", "Có"],
+    ["Heap Sort", "O(n log n)", "O(n log n)", "O(1)", "Không"],
   ]}
 />
+
+Trong đề thi tuyển sinh 10 và thi HSG, `sort()` của C++ (thường triển khai lai Quick Sort + Heap Sort,
+gọi là Introsort) đã đủ dùng trong hầu hết trường hợp — nhưng hiểu rõ cả sáu thuật toán này giúp trả
+lời đúng các câu hỏi lý thuyết về độ phức tạp, tính ổn định, và giúp cài đặt tay khi đề bài yêu cầu.
