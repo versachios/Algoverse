@@ -1,0 +1,50 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Tính tổng một đoạn mà không cần duyệt lại đoạn đó — trả giá O(n) một lần, đổi lấy O(1) cho mọi truy vấn sau.*
+
+## Bài toán
+
+Cho mảng `a[]` gồm n số và q truy vấn, mỗi truy vấn hỏi tổng `a[l] + ... + a[r]`. Cách ngây thơ duyệt từng đoạn mất O(n) mỗi truy vấn, tổng cộng **O(n · q)**.
+
+## Ý tưởng mảng tiền tố
+
+Định nghĩa `pre[i] = a[0] + a[1] + ... + a[i]`. Mảng này xây được trong một lượt: `pre[i] = pre[i-1] + a[i]`.
+
+Khi đó tổng đoạn `[l, r]` chính là phần "tích luỹ đến r" trừ đi phần "tích luỹ trước l":
+
+- Nếu `l > 0`: `sum(l, r) = pre[r] - pre[l-1]`
+- Nếu `l = 0`: `sum(0, r) = pre[r]`
+
+Mô phỏng bên cạnh biến `a` thành `pre` ngay tại chỗ, rồi trả lời một truy vấn bằng đúng một phép trừ.
+
+## Mảng hiệu (Difference Array)
+
+Mảng hiệu là phép "ngược" của tổng tiền tố. Với `d[i] = a[i] - a[i-1]`, thao tác **cộng v vào mọi phần tử của [l, r]** chỉ còn là hai cập nhật điểm: `d[l] += v` và `d[r+1] -= v`. Sau khi áp dụng mọi cập nhật, lấy tổng tiền tố của `d` để khôi phục `a`.
+
+Dùng prefix sum khi cần **nhiều truy vấn đọc**, dùng difference array khi cần **nhiều cập nhật đoạn** rồi mới đọc kết quả.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Xây mảng tiền tố", "O(n)", "Một lượt duyệt"],
+    ["Mỗi truy vấn tổng đoạn", "O(1)", "Một phép trừ"],
+    ["Không gian", "O(n)", "Hoặc O(1) nếu ghi đè lên mảng gốc như trong mô phỏng"],
+    ["So với brute-force", "O(n·q) → O(n + q)", "Nhanh hơn rất nhiều khi q lớn"],
+  ]}
+/>
+
+<Quiz
+  question="Với mảng tiền tố pre[], tổng đoạn [l, r] (l > 0) bằng gì?"
+  options={[
+    "pre[r] + pre[l]",
+    "pre[r] - pre[l-1]",
+    "pre[r] - pre[l]",
+    "pre[r-1] - pre[l-1]",
+  ]}
+  answer={1}
+  correctNote="Đúng — pre[r] gồm cả phần trước l, nên trừ pre[l-1] để chỉ còn a[l..r]."
+  incorrectNote="Chưa đúng — pre[r] - pre[l] sẽ làm mất a[l]. Cần trừ pre[l-1]."
+/>

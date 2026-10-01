@@ -27,6 +27,9 @@ import { lcs } from "./lcs";
 import { lis } from "./lis";
 import { bitmaskDp } from "./bitmask-dp";
 import { treeDp } from "./tree-dp";
+import { prefixSum } from "./prefix-sum";
+import { binarySearchOnAnswer } from "./binary-search-on-answer";
+import { recursionBacktracking } from "./recursion-backtracking";
 import type { AlgorithmModule } from "./types";
 
 export const algorithmRegistry: Record<string, AlgorithmModule> = {
@@ -59,6 +62,9 @@ export const algorithmRegistry: Record<string, AlgorithmModule> = {
   lis,
   "bitmask-dp": bitmaskDp,
   "tree-dp": treeDp,
+  "prefix-sum": prefixSum,
+  "binary-search-on-answer": binarySearchOnAnswer,
+  "recursion-backtracking": recursionBacktracking,
 };
 
 export function getAlgorithm(slug: string): AlgorithmModule {

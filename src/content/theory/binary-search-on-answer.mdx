@@ -1,0 +1,47 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Thay vì tìm trong mảng, ta tìm trong "không gian đáp án": đoán một giá trị, kiểm tra nó có đủ tốt không, rồi thu hẹp.*
+
+## Bài toán
+
+Cho mảng số dương `a[]` và số nguyên `k`. Chia mảng thành **tối đa k đoạn liên tiếp** sao cho **tổng của đoạn lớn nhất là nhỏ nhất có thể**.
+
+Ví dụ `a = [7, 2, 5, 10, 8]`, `k = 3`: cách chia `[7, 2, 5] | [10] | [8]` có đoạn lớn nhất là 14, và không cách nào làm tốt hơn.
+
+## Khi nào dùng nhị phân trên đáp án?
+
+Dấu hiệu: bài hỏi "giá trị nhỏ nhất/lớn nhất sao cho ...", và có **tính đơn điệu**. Nếu sức chứa `x` đã đủ để chia được thì mọi `x' > x` cũng đủ. Khi đó các giá trị khả thi tạo thành một dải liên tục, và ta nhị phân để tìm biên của nó.
+
+## Ba bước
+
+1. Xác định khoảng đáp án: `lo = max(a)` (đoạn nào cũng chứa được phần tử lớn nhất), `hi = sum(a)` (một đoạn duy nhất).
+2. Viết hàm kiểm tra `ok(cap)`: tham lam gom phần tử vào đoạn hiện tại, vượt `cap` thì mở đoạn mới; khả thi nếu số đoạn `≤ k`.
+3. Nhị phân: nếu `ok(mid)` thì `hi = mid`, ngược lại `lo = mid + 1`.
+
+Trong mô phỏng, đoạn đã chốt có màu be, đoạn đang gom có màu cam, và ô bị "cắt" được đánh dấu riêng.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Số vòng nhị phân", "O(log(sum a))", "Khoảng đáp án giảm một nửa mỗi vòng"],
+    ["Mỗi lần kiểm tra", "O(n)", "Một lượt tham lam"],
+    ["Tổng thời gian", "O(n · log(sum a))", "Thường thay thế được lời giải O(n²) hoặc DP"],
+    ["Không gian", "O(1)", "Không cần mảng phụ"],
+  ]}
+/>
+
+<Quiz
+  question="Vì sao hàm kiểm tra ok(cap) cần có tính đơn điệu?"
+  options={[
+    "Để vòng lặp chạy nhanh hơn",
+    "Để nếu cap khả thi thì mọi cap lớn hơn cũng khả thi, nhờ đó loại được nửa khoảng sau mỗi lần thử",
+    "Để mảng không cần sắp xếp",
+    "Để đáp án luôn là số chẵn",
+  ]}
+  answer={1}
+  correctNote="Đúng — đơn điệu cho phép kết luận cả một nửa khoảng chỉ sau một lần kiểm tra."
+  incorrectNote="Chưa đúng — vai trò của tính đơn điệu là cho phép loại bỏ nửa khoảng đáp án sau mỗi lần kiểm tra."
+/>

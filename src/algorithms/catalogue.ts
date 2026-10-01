@@ -69,12 +69,12 @@ export const catalogue: CatalogueEntry[] = [
       { slug: "heap-sort", name: "Heap Sort", ready: true },
     ],
   },
-  { slug: "recursion-backtracking", name: "Recursion & Backtracking", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: false },
+  { slug: "recursion-backtracking", name: "Recursion & Backtracking", group: "Sorting", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "3d", ready: true },
 
   // ---- Giải thuật: Tìm kiếm ----
   { slug: "linear-search", name: "Linear Search", group: "Searching", category: "Giải thuật", level: "Cơ bản", renderMode: "2.5d", ready: true },
   { slug: "binary-search", name: "Binary Search", group: "Searching", category: "Giải thuật", level: "Cơ bản", renderMode: "2.5d", ready: true },
-  { slug: "binary-search-on-answer", name: "Binary Search trên đáp án", group: "Searching", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: false },
+  { slug: "binary-search-on-answer", name: "Binary Search trên đáp án", group: "Searching", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
 
   // ---- Giải thuật: Hai con trỏ ----
   {
@@ -94,7 +94,7 @@ export const catalogue: CatalogueEntry[] = [
   },
   { slug: "sliding-window", name: "Sliding Window", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
   { slug: "kadane", name: "Kadane's Algorithm", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
-  { slug: "prefix-sum", name: "Prefix Sum / Difference Array", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: false },
+  { slug: "prefix-sum", name: "Prefix Sum / Difference Array", group: "Two Pointers", category: "Giải thuật", level: "Cấp 2 - Cấp 3", renderMode: "2.5d", ready: true },
 
   // ---- Giải thuật: Đồ thị ----
   { slug: "bfs", name: "BFS — Duyệt theo bề rộng", group: "Graph", category: "Giải thuật", level: "Olympiad", renderMode: "3d", ready: true },

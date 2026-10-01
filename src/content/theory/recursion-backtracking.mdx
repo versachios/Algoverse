@@ -1,0 +1,46 @@
+import { Quiz } from "@/components/Quiz";
+import { ComplexityTable } from "@/components/ComplexityTable";
+
+> *Quay lui là đệ quy có "nút hoàn tác": thử một lựa chọn, đi sâu, và nếu bí đường thì rút lựa chọn lại để thử cái khác.*
+
+## Bài toán N-Queens
+
+Đặt n quân hậu lên bàn cờ n×n sao cho không quân nào ăn nhau, tức là không có hai quân nào cùng hàng, cùng cột hoặc cùng đường chéo. Mô phỏng chạy với n từ 4 đến 6.
+
+## Khung của quay lui
+
+Với mỗi hàng `r`, thử lần lượt từng cột `c`:
+
+1. **Kiểm tra** ô `(r, c)` có bị quân nào đã đặt ăn không. Nếu có, bỏ qua ngay.
+2. **Chọn**: đặt quân, rồi gọi đệ quy sang hàng `r + 1`.
+3. **Hoàn tác**: nếu nhánh đệ quy thất bại, nhấc quân ra và thử cột kế tiếp.
+
+Hai quân ở hàng `i` cột `j` và hàng `r` cột `c` ăn nhau khi `j == c` hoặc `|j - c| == r - i`. Nhờ đặt đúng một quân mỗi hàng, ta không cần kiểm tra điều kiện cùng hàng.
+
+## Cắt tỉa
+
+Sức mạnh của quay lui nằm ở việc **bỏ cả một nhánh ngay khi phát hiện vi phạm**. Với n = 6 có 6⁶ = 46656 cách đặt mỗi hàng một quân, nhưng quay lui chỉ ghé thăm một phần rất nhỏ trong số đó. Hãy nhìn bộ đếm "lần thử" và "quay lui" trong mô phỏng.
+
+## Độ phức tạp
+
+<ComplexityTable
+  headers={["Tiêu chí", "Độ phức tạp", "Ghi chú"]}
+  rows={[
+    ["Không gian trạng thái", "n^n", "Mỗi hàng chọn một trong n cột"],
+    ["Thực tế khi cắt tỉa", "Nhỏ hơn nhiều", "Chỉ đi tiếp ở các ô an toàn"],
+    ["Không gian bộ nhớ", "O(n)", "Mảng col[] và độ sâu đệ quy"],
+  ]}
+/>
+
+<Quiz
+  question="Khi mọi cột ở hàng r đều bị ăn, thuật toán làm gì?"
+  options={[
+    "Kết thúc và báo vô nghiệm",
+    "Quay lui: nhấc quân ở hàng r-1 ra và thử cột kế tiếp của hàng đó",
+    "Đặt đại một quân rồi tiếp tục",
+    "Bắt đầu lại từ hàng 0",
+  ]}
+  answer={1}
+  correctNote="Đúng — hàng r bí đường nghĩa là lựa chọn ở hàng r-1 chưa ổn, ta rút lại và thử hướng khác."
+  incorrectNote="Chưa đúng — bí đường ở một hàng chỉ có nghĩa là phải hoàn tác lựa chọn ngay phía trước, không phải bỏ cuộc hay làm lại từ đầu."
+/>

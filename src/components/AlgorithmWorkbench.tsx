@@ -67,6 +67,12 @@ const DEFAULT_INPUTS: Record<string, number[]> = {
   "bitmask-dp": [4, 9, 2, 7, 8, 6, 4, 3, 7, 5, 8, 1, 8, 7, 6, 9, 4],
   // Tree DP: array-indexed complete binary tree of weights (node i's children are 2i+1, 2i+2)
   "tree-dp": [5, 3, 8, 2, 4, 1, 6, 9],
+  // Prefix sum: [l, r, a...] — query the sum of a[l..r] (0-indexed)
+  "prefix-sum": [2, 6, 3, 1, 4, 1, 5, 9, 2, 6],
+  // Binary search on answer: [k, a...] — split into at most k segments, minimise the largest sum
+  "binary-search-on-answer": [3, 7, 2, 5, 10, 8],
+  // Recursion & backtracking (N-Queens): [n], 4 ≤ n ≤ 6
+  "recursion-backtracking": [4],
 };
 
 /**
@@ -183,6 +189,16 @@ const INPUT_FIELDS: Record<string, InputFieldSpec[]> = {
     { label: "Ma trận chi phí n×n (theo hàng)", fixed: 0 },
   ],
   "tree-dp": [{ label: "Trọng số các nút (thứ tự mảng, chỉ số 0 = gốc)", fixed: 0 }],
+  "prefix-sum": [
+    { label: "l — đầu đoạn truy vấn (từ 0)", fixed: 1 },
+    { label: "r — cuối đoạn truy vấn", fixed: 1 },
+    { label: "Mảng a", fixed: 0 },
+  ],
+  "binary-search-on-answer": [
+    { label: "k — số đoạn tối đa", fixed: 1 },
+    { label: "Mảng a (số dương)", fixed: 0 },
+  ],
+  "recursion-backtracking": [{ label: "n — cỡ bàn cờ N-Queens (4 đến 6)", fixed: 1 }],
 };
 const FALLBACK_FIELDS: InputFieldSpec[] = [{ label: "Mảng a", fixed: 0 }];
 
